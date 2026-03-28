@@ -1,0 +1,52 @@
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - input_dir: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - model_name: qwen3.5:9b
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - base_url: http://127.0.0.1:11434
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - api_key: ollama
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - log_path: ./llm_judge.log
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - max_workers: 2
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - request_timeout: 600.0
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - output_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base/llm_judge.jsonl
+2026-03-28 01:07:36 - INFO - llm_judge.py - <module> - metric_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base/llm_judge_metric.txt
+2026-03-28 01:07:37 - INFO - llm_judge.py - run - OpenAI client base_url (resolved): http://127.0.0.1:11434/v1
+2026-03-28 01:07:37 - INFO - llm_judge.py - run - Read 125 lines from /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base
+2026-03-28 01:08:49 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-28 01:08:49 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-28 01:08:49 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-28 01:09:33 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-28 01:09:33 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-28 01:09:33 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-28 01:10:19 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-28 01:10:19 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-28 01:10:19 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-28 01:10:46 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:10:46 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:10:46 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-28 01:11:13 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-28 01:11:13 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-28 01:11:13 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-28 01:11:40 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:11:40 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:11:40 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-28 01:12:07 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-28 01:12:07 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-28 01:12:07 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-28 01:12:07 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-03-28 01:12:33 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:12:33 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:12:33 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-28 01:13:00 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-28 01:13:00 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-28 01:13:00 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-28 01:13:27 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:13:27 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:13:27 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-28 01:13:54 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-28 01:13:54 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-28 01:13:54 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-28 01:14:21 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:14:21 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:14:21 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-28 01:14:21 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-28 01:14:48 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-28 01:14:48 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-28 01:14:48 - INFO - utils.py - wrapper - [retry] try 2 times
