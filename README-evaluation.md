@@ -7,7 +7,7 @@ conda create -n research-eval python=3.11 -y
 conda activate research-eval
 
 pip install -r requirements-evaluation.txt
-python setup_evaluation.py develop
+python setup_evaluation.py develop --no-deps
 ```
 
 ### 2. CUDA (GPU node; before SGLang)
@@ -156,6 +156,9 @@ Use the instruct checkpoint for `--generator_model` and **`--apply_chat True`** 
 
 Shared defaults here: `--generator_model .../models/Qwen3-0.6B`, `--save_note research_qwen3_instruct`, `--apply_chat True`.
 
+##### Reasoning (optional)
+If you want the model’s intermediate reasoning to be included in the generated text, set `--enable_thinking True`. Evaluation/metrics still extract the final answer from `<answer>...</answer>`, so enabling thinking should not change the answer formatting requirements.
+
 ##### Bamboogle (`data/bamboogle/test.jsonl`)
 
 ```bash
@@ -171,6 +174,20 @@ python run_eval.py \
   --remote_retriever_url 127.0.0.1:3005 \
   --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
   --apply_chat True
+
+python run_eval.py \
+  --config_path eval_config.yaml \
+  --method_name research \
+  --data_dir /zfsstore/user/s4374886/omega/re-search/data \
+  --dataset_name bamboogle \
+  --split test \
+  --save_dir /zfsstore/user/s4374886/omega/re-search/results/bamboogle \
+  --save_note research_qwen3_reasoning \
+  --sgl_remote_url 127.0.0.1:3000 \
+  --remote_retriever_url 127.0.0.1:3005 \
+  --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
+  --apply_chat True \
+  --enable_thinking True
 ```
 
 ##### HotpotQA (`data/hotpotqa/{dev,train}.jsonl`)
@@ -188,6 +205,20 @@ python run_eval.py \
   --remote_retriever_url 127.0.0.1:3005 \
   --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
   --apply_chat True
+
+python run_eval.py \
+  --config_path eval_config.yaml \
+  --method_name research \
+  --data_dir /zfsstore/user/s4374886/omega/re-search/data \
+  --dataset_name hotpotqa \
+  --split dev \
+  --save_dir /zfsstore/user/s4374886/omega/re-search/results/hotpotqa \
+  --save_note research_qwen3_reasoning \
+  --sgl_remote_url 127.0.0.1:3000 \
+  --remote_retriever_url 127.0.0.1:3005 \
+  --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
+  --apply_chat True \
+  --enable_thinking True
 ```
 
 Use `--split train` to run on `train.jsonl` instead.
@@ -207,6 +238,20 @@ python run_eval.py \
   --remote_retriever_url 127.0.0.1:3005 \
   --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
   --apply_chat True
+
+python run_eval.py \
+  --config_path eval_config.yaml \
+  --method_name research \
+  --data_dir /zfsstore/user/s4374886/omega/re-search/data \
+  --dataset_name musique \
+  --split dev \
+  --save_dir /zfsstore/user/s4374886/omega/re-search/results/musique \
+  --save_note research_qwen3_reasoning \
+  --sgl_remote_url 127.0.0.1:3000 \
+  --remote_retriever_url 127.0.0.1:3005 \
+  --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
+  --apply_chat True \
+  --enable_thinking True
 ```
 
 Use `--split train` for `train.jsonl`.
@@ -226,6 +271,20 @@ python run_eval.py \
   --remote_retriever_url 127.0.0.1:3005 \
   --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
   --apply_chat True
+
+python run_eval.py \
+  --config_path eval_config.yaml \
+  --method_name research \
+  --data_dir /zfsstore/user/s4374886/omega/re-search/data \
+  --dataset_name 2wikimultihopqa \
+  --split dev \
+  --save_dir /zfsstore/user/s4374886/omega/re-search/results/2wikimultihopqa \
+  --save_note research_qwen3_reasoning \
+  --sgl_remote_url 127.0.0.1:3000 \
+  --remote_retriever_url 127.0.0.1:3005 \
+  --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
+  --apply_chat True \
+  --enable_thinking True
 ```
 
 Use `--split train` for `train.jsonl`.
@@ -257,7 +316,7 @@ After `run_eval.py` finishes, you can score predictions with an **OpenAI-compati
 cd scripts/evaluation
 
 python llm_judge.py \
-  --input_dir /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base \
+  --input_dir /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_30_12_00_research_qwen3_reasoning \
   --base_url http://127.0.0.1:11434 \
   --model_name qwen3.5:9b \
   --max_workers 2 \

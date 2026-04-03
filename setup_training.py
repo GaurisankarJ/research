@@ -1,3 +1,14 @@
+"""Training distribution (re-search-training): vLLM + Qwen3 stack.
+
+install_requires matches requirements-training.txt (flash-attn is excluded: pip cannot
+build it in isolation; use requirements-training-flashattn.txt after pip install -r).
+
+Recommended:
+  pip install -r requirements-training.txt && pip check
+  MAX_JOBS=8 pip install --no-build-isolation --no-cache-dir -r requirements-training-flashattn.txt
+  python setup_training.py develop --no-deps
+"""
+
 import os
 from pathlib import Path
 
@@ -11,7 +22,7 @@ with open(os.path.join(version_folder, "src/version")) as f:
     __version__ = f.read().strip()
 
 
-def _read_requirements(path: str = "requirements-training.txt") -> list[str]:
+def _read_requirements(path: str) -> list[str]:
     req_path = this_directory / path
     lines = req_path.read_text().splitlines()
     reqs: list[str] = []

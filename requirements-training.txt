@@ -82,7 +82,7 @@ langid==1.1.6
 lark==1.2.2
 latex2mathml==3.79.0
 llvmlite==0.44.0
-lm-format-enforcer>=0.10.11,<0.11
+lm-format-enforcer==0.10.11
 markdown-it-py==4.0.0
 markdown2==2.5.5
 MarkupSafe==3.0.3
@@ -153,7 +153,7 @@ pytz==2026.1.post1
 PyYAML==6.0.3
 pyzmq==27.1.0
 rank-bm25==0.2.2
-ray==2.43.0
+ray[cgraph]==2.43.0
 referencing==0.37.0
 regex==2026.2.28
 requests==2.33.0
@@ -191,7 +191,14 @@ tokenizers==0.21.4
 toml==0.10.2
 tomlkit==0.13.3
 torch==2.6.0
+torchvision==0.21.0
+torchaudio==2.6.0
+xformers==0.0.29.post2
+xgrammar==0.1.18
+triton==3.2.0
 vllm==0.8.5.post1
+# flash-attn: do NOT list here — pip’s isolated build runs before torch is visible (ModuleNotFoundError: torch). Install after this file:
+#   pip install -r requirements-training-flashattn.txt
 tornado==6.5.5
 tqdm==4.67.3
 traitlets==5.14.3

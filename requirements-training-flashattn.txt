@@ -1,0 +1,10 @@
+# VERL FSDP imports flash_attn.bert_padding — required for training with actor_rollout_ref.actor.strategy=fsdp.
+#
+# Install ONLY after the main stack (torch, vllm, etc.) is installed from requirements-training.txt:
+#
+#   pip install -r requirements-training.txt
+#   MAX_JOBS=8 pip install --no-build-isolation --no-cache-dir -r requirements-training-flashattn.txt
+#
+# --no-build-isolation is required: flash-attn's setup imports torch, which is absent in pip's default build env.
+# On clusters: module load CUDA/12.x, export CUDA_HOME, then run the second line.
+flash-attn==2.8.3

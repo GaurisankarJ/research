@@ -57,13 +57,13 @@ Server runs at `http://127.0.0.1:3000`.
 ### Health
 
 ```bash
-curl -X GET "http://127.0.0.1:3000/health"
+curl -X GET "http://127.0.0.1:3005/health"
 ```
 
 ### Search
 
 ```bash
-curl -X POST "http://127.0.0.1:3000/search" \
+curl -X POST "http://127.0.0.1:3005/search" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "Who wrote The Lord of the Rings?",

@@ -9,21 +9,21 @@ MAX_PROMPT_LENGTH=512
 MAX_RESPONSE_LENGTH=8192
 APPLY_CHAT=True
 PROMPT_TEMPLATE_NAME=re_search_template_sys
-ACTOR_MODEL_PATH=/your/model/path
+ACTOR_MODEL_PATH=../../models/Qwen3-0.6B-Base
 REWARD_MANAGER=re_search
 ROLLOUT_N=5
-SEARCH_URL=/your/search/url
-PROJECT_NAME=project-name-on-wandb
-EXPERIMENT_NAME=experiment-name-on-wandb
+SEARCH_URL=127.0.0.1:3005
+PROJECT_NAME=research
+EXPERIMENT_NAME=qwen3-0.6b-base
 NNODES=1
 N_GPUS_PER_NODE=4
 SAVE_FREQ=10
 TEST_FREQ=10
 TOTAL_EPOCHS=2
-WANDB_API_KEY=your-wandb-api-key
-SAVE_PATH=/your/save/path
-TRAIN_FILES=/your/train/file/path
-TEST_FILES=/your/test/file/path
+WANDB_API_KEY=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
+SAVE_PATH=../../results/qwen3-0.6b-base
+TRAIN_FILES=../../data/musique/train.parquet
+TEST_FILES=../../data/musique/test.parquet
 
 while [[ $# -gt 0 ]]; do
     case "$1" in

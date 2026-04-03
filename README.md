@@ -9,7 +9,7 @@ conda create -n research311 python=3.11 -y
 conda activate research311
 cd /zfsstore/user/s4374886/omega/re-search
 pip install -r requirements.txt
-pip install -e .
+pip install -e ".[sglang]"
 ```
 
 Quick sanity checks:
@@ -26,8 +26,11 @@ conda create -n research311-vllm python=3.11 -y
 conda activate research311-vllm
 cd /zfsstore/user/s4374886/omega/re-search
 pip install -r requirements-vllm.txt
-RESEARCH_REQUIREMENTS_FILE=requirements-vllm.txt pip install -e .
+MAX_JOBS=8 pip install --no-build-isolation --no-cache-dir -r requirements-training-flashattn.txt
+pip install -e ".[vllm]"
 ```
+
+(`flash-attn` is a separate step: it must build against the installed `torch`. See `README-training.md` for the full **training** env.)
 
 Quick sanity checks:
 
@@ -43,6 +46,7 @@ python -c "import torch, vllm, transformers, verl; print(torch.__version__, vllm
 - **Split profile design**:
   - `requirements.txt`: SGLang-oriented base profile.
   - `requirements-vllm.txt`: vLLM profile pinned to `vllm==0.8.5.post1` with compatible formatter deps.
+- **Editable install**: use `pip install -e ".[sglang]"` or `pip install -e ".[vllm]"`. Plain `pip install -e .` installs no heavy deps so you cannot accidentally mix stacks.
 
 ## 2. SGLang (Qwen3) on ALICE GPU
 

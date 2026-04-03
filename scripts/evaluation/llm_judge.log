@@ -50,3 +50,721 @@
 2026-03-28 01:14:48 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
 2026-03-28 01:14:48 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
 2026-03-28 01:14:48 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-28 01:15:33 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-28 01:15:33 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-28 01:15:33 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-28 01:16:00 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:16:00 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:16:00 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-28 01:16:26 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-28 01:16:26 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-28 01:16:26 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-28 01:16:26 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 3 column 5 (char 346). Retry run_judge failed after 5 times
+2026-03-28 01:16:53 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:16:53 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:16:53 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-28 01:17:20 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:17:20 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:17:20 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-28 01:17:47 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:17:47 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:17:47 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-28 01:18:14 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:18:14 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:18:14 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-28 01:18:40 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:18:40 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:18:40 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-28 01:19:07 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:19:07 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:19:07 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-28 01:19:34 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:19:34 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:19:34 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-28 01:19:34 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-28 01:20:01 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-28 01:20:01 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-28 01:20:01 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - input_dir: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_30_12_00_research_qwen3_reasoning
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - model_name: qwen3.5:9b
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - base_url: http://127.0.0.1:11434
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - api_key: ollama
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - log_path: ./llm_judge.log
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - max_workers: 2
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - request_timeout: 600.0
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - output_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_30_12_00_research_qwen3_reasoning/llm_judge.jsonl
+2026-03-30 12:12:09 - INFO - llm_judge.py - <module> - metric_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_30_12_00_research_qwen3_reasoning/llm_judge_metric.txt
+2026-03-30 12:12:10 - INFO - llm_judge.py - run - OpenAI client base_url (resolved): http://127.0.0.1:11434/v1
+2026-03-30 12:12:10 - INFO - llm_judge.py - run - Read 125 lines from /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_03_30_12_00_research_qwen3_reasoning
+2026-03-30 12:13:42 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:13:42 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-30 12:13:42 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:14:25 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:14:25 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-30 12:14:25 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:15:12 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:15:12 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-30 12:15:12 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:15:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:15:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:15:38 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:16:05 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:16:05 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-30 12:16:05 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:16:32 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:16:32 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:16:32 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:16:59 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:16:59 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The question asks for the identity of the first African American mayor of the most populous city in the United States (New York City). The ground truth'
+2026-03-30 12:16:59 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:16:59 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-03-30 12:17:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:17:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:17:25 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:17:52 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-30 12:17:52 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-30 12:17:52 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:18:19 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:18:19 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:18:19 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:18:46 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-30 12:18:46 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-30 12:18:46 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:19:12 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:19:12 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:19:12 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:19:12 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:19:39 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-30 12:19:39 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-30 12:19:39 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:20:24 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-30 12:20:24 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-30 12:20:24 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:20:50 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:20:50 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:20:50 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:21:17 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 3 column 5 (char 346)
+2026-03-30 12:21:17 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains the item \'131\', indicating that the correct answer to the question is 131. The predicted answer provided is empty. Since an empty string does not semantically match or convey the information of \'131\', the prediction fails to answer the question correctly based on the ground truth.",\n    "'
+2026-03-30 12:21:17 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:21:17 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 3 column 5 (char 346). Retry run_judge failed after 5 times
+2026-03-30 12:21:44 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:21:44 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:21:44 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:22:11 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:22:11 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:22:11 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:22:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:22:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:22:38 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:23:04 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:23:04 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:23:04 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:23:31 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:23:31 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:23:31 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:23:58 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:23:58 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:23:58 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:24:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:24:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:24:25 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:24:25 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:24:52 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:24:52 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:24:52 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:25:32 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:25:32 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:25:32 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:25:32 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:26:43 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:26:43 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:26:43 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:27:22 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:27:22 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:27:22 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:27:49 - INFO - llm_judge.py - run_judge - Error parsing response: Expecting property name enclosed in double quotes: line 2 column 229 (char 230)
+2026-03-30 12:27:49 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The predicted answer is empty, while the ground truth answer is \'Jane Shirley Smith\'. Since the prediction does not provide the correct name or match the ground truth semantically, it is considered incorrect.",'
+2026-03-30 12:27:49 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:28:16 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:28:16 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:28:16 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:28:42 - INFO - llm_judge.py - run_judge - Error parsing response: Expecting property name enclosed in double quotes: line 2 column 229 (char 230)
+2026-03-30 12:28:42 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The predicted answer is empty, while the ground truth answer is \'Jane Shirley Smith\'. Since the prediction does not provide the correct name or match the ground truth semantically, it is considered incorrect.",'
+2026-03-30 12:28:42 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:29:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:29:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:29:09 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:29:36 - INFO - llm_judge.py - run_judge - Error parsing response: Expecting property name enclosed in double quotes: line 2 column 229 (char 230)
+2026-03-30 12:29:36 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The predicted answer is empty, while the ground truth answer is \'Jane Shirley Smith\'. Since the prediction does not provide the correct name or match the ground truth semantically, it is considered incorrect.",'
+2026-03-30 12:29:36 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:30:03 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:30:03 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:30:03 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:30:03 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:30:30 - INFO - llm_judge.py - run_judge - Error parsing response: Expecting property name enclosed in double quotes: line 2 column 229 (char 230)
+2026-03-30 12:30:30 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The predicted answer is empty, while the ground truth answer is \'Jane Shirley Smith\'. Since the prediction does not provide the correct name or match the ground truth semantically, it is considered incorrect.",'
+2026-03-30 12:30:30 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:30:57 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:30:57 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:30:57 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:31:23 - INFO - llm_judge.py - run_judge - Error parsing response: Expecting property name enclosed in double quotes: line 2 column 229 (char 230)
+2026-03-30 12:31:23 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The predicted answer is empty, while the ground truth answer is \'Jane Shirley Smith\'. Since the prediction does not provide the correct name or match the ground truth semantically, it is considered incorrect.",'
+2026-03-30 12:31:23 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:31:23 - INFO - utils.py - execute - [error] Error: Expecting property name enclosed in double quotes: line 2 column 229 (char 230). Retry run_judge failed after 5 times
+2026-03-30 12:31:50 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:31:50 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:31:50 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:32:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:32:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:32:38 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:33:04 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:33:04 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:33:04 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:33:31 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:33:31 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:33:31 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:33:58 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:33:58 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:33:58 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:34:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:34:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:34:25 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:34:25 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:34:52 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:34:52 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:34:52 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:35:18 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:35:18 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:35:18 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:35:45 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:35:45 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:35:45 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:36:12 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:36:12 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:36:12 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:36:39 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:36:39 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:36:39 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:36:39 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:37:06 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:37:06 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:37:06 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:37:33 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:37:33 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:37:33 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:37:59 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:37:59 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:37:59 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:38:26 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:38:26 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:38:26 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:38:53 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:38:53 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:38:53 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:38:53 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:39:20 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:39:20 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:39:20 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:40:07 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:40:07 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:40:07 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:40:34 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:40:34 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:40:34 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:41:00 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:41:00 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:41:00 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:41:00 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:41:27 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:41:27 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:41:27 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:42:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:42:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:42:09 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:42:36 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:42:36 - INFO - llm_judge.py - run_judge - Response: '```json\n{\n    "rationale": "The ground truth answer explicitly identifies \'Centrifugal Force\' as the specific physical force used in honey extractors. The pred_answer \'mechanical force\' is a broad, generic term that does not specifically describe the centrifugal mechanism required to extract honey from combs. Furthermore, the pred_answer contains'
+2026-03-30 12:42:36 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:43:02 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:43:02 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:43:02 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:43:29 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:43:29 - INFO - llm_judge.py - run_judge - Response: '```json\n{\n    "rationale": "The ground truth answer explicitly identifies \'Centrifugal Force\' as the specific physical force used in honey extractors. The pred_answer \'mechanical force\' is a broad, generic term that does not specifically describe the centrifugal mechanism required to extract honey from combs. Furthermore, the pred_answer contains'
+2026-03-30 12:43:29 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:43:56 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:43:56 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:43:56 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:43:56 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:44:23 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:44:23 - INFO - llm_judge.py - run_judge - Response: '```json\n{\n    "rationale": "The ground truth answer explicitly identifies \'Centrifugal Force\' as the specific physical force used in honey extractors. The pred_answer \'mechanical force\' is a broad, generic term that does not specifically describe the centrifugal mechanism required to extract honey from combs. Furthermore, the pred_answer contains'
+2026-03-30 12:44:23 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:45:02 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:45:02 - INFO - llm_judge.py - run_judge - Response: '```json\n{\n    "rationale": "The ground truth answer explicitly identifies \'Centrifugal Force\' as the specific physical force used in honey extractors. The pred_answer \'mechanical force\' is a broad, generic term that does not specifically describe the centrifugal mechanism required to extract honey from combs. Furthermore, the pred_answer contains'
+2026-03-30 12:45:02 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:45:56 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:45:56 - INFO - llm_judge.py - run_judge - Response: '```json\n{\n    "rationale": "The ground truth answer explicitly identifies \'Centrifugal Force\' as the specific physical force used in honey extractors. The pred_answer \'mechanical force\' is a broad, generic term that does not specifically describe the centrifugal mechanism required to extract honey from combs. Furthermore, the pred_answer contains'
+2026-03-30 12:45:56 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:45:56 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-03-30 12:47:03 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:47:03 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:47:03 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:47:49 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:47:49 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:47:49 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:48:33 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:48:33 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:48:33 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:49:20 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:49:20 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:49:20 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:50:11 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:50:11 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:50:11 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:50:11 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:50:37 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:50:37 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:50:37 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:51:04 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:51:04 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:51:04 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:51:31 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:51:31 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:51:31 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:51:58 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:51:58 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:51:58 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:52:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:52:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:52:25 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:52:51 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:52:51 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:52:51 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:53:18 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:53:18 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:53:18 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:53:45 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:53:45 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:53:45 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:54:12 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:54:12 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:54:12 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:54:12 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:54:39 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:54:39 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:54:39 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:54:39 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 12:56:27 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:56:27 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:56:27 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:57:13 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:57:13 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:57:13 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:57:39 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:57:39 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer provided is \'Thomas O. Paine\'. The predicted answer'
+2026-03-30 12:57:39 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 12:58:06 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:58:06 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:58:06 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:58:33 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:58:33 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer provided is \'Thomas O. Paine\'. The predicted answer'
+2026-03-30 12:58:33 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 12:59:00 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:59:00 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:59:00 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 12:59:27 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 12:59:27 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer provided is \'Thomas O. Paine\'. The predicted answer'
+2026-03-30 12:59:27 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 12:59:53 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 12:59:53 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 12:59:53 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 12:59:53 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:00:20 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:00:20 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer provided is \'Thomas O. Paine\'. The predicted answer'
+2026-03-30 13:00:20 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:01:12 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:01:12 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer provided is \'Thomas O. Paine\'. The predicted answer'
+2026-03-30 13:01:12 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:01:12 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-03-30 13:02:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:02:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:02:25 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:02:51 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:02:51 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:02:51 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:03:18 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:03:18 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:03:18 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:03:45 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:03:45 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:03:45 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:04:12 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:04:12 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:04:12 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:04:39 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:04:39 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:04:39 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:05:06 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:05:06 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:05:06 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:05:32 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:05:32 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:05:32 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:05:59 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:05:59 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:05:59 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:05:59 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:06:26 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:06:26 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:06:26 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:06:26 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:08:22 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:08:22 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:08:22 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:08:49 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:08:49 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:08:49 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:09:16 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:09:16 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:09:16 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:09:43 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:09:43 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:09:43 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:10:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:10:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:10:09 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:10:36 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:10:36 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:10:36 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:11:03 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:11:03 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:11:03 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:11:30 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:11:30 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:11:30 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:11:56 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:11:56 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:11:56 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:11:56 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:12:23 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:12:23 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:12:23 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:12:23 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:13:14 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:13:14 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:13:14 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:13:41 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:13:41 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:13:41 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:14:07 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:14:07 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:14:07 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:14:34 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:14:34 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:14:34 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:15:01 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:15:01 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:15:01 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:15:28 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:15:28 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:15:28 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:15:54 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:15:54 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:15:54 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:16:21 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:16:21 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:16:21 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:16:48 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:16:48 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:16:48 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:16:48 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:17:15 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:17:15 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:17:15 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:17:15 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:17:42 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:17:42 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:17:42 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:18:35 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:18:35 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:18:35 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:19:21 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:19:21 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:19:21 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:19:48 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:19:48 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:19:48 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:20:15 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:20:15 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:20:15 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:20:41 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:20:41 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:20:41 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:21:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:21:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:21:08 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:21:08 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:21:35 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:21:35 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:21:35 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:22:17 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:22:17 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:22:17 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:23:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:23:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:23:08 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:23:08 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:24:30 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:24:30 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:24:30 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:25:17 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:25:17 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:25:17 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:25:44 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:25:44 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:25:44 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:26:11 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:26:11 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:26:11 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:26:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:26:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:26:38 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:27:05 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:27:05 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:27:05 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:27:31 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:27:31 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:27:31 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:27:58 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:27:58 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:27:58 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:27:58 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:28:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:28:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:28:25 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:29:15 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:29:15 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:29:15 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:29:15 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:30:07 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:30:07 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:30:07 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:30:34 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:30:34 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:30:34 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:31:00 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:31:00 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:31:00 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:31:27 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:31:27 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:31:27 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:31:54 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:31:54 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:31:54 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:32:21 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:32:21 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:32:21 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:32:48 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:32:48 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:32:48 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:33:15 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:33:15 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:33:15 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:33:41 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:33:41 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:33:41 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:33:41 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:34:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:34:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:34:08 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:34:08 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:36:40 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:36:40 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:36:40 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:37:26 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:37:26 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:37:26 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:38:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:38:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:38:09 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:38:57 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:38:57 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:38:57 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:39:50 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:39:50 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:39:50 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:39:50 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:40:35 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:40:35 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:40:35 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:41:01 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:41:02 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains \'Pickens Butler Watson\', which is the correct answer to the question regarding the father of John B.'
+2026-03-30 13:41:02 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:41:28 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:41:28 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:41:28 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:41:55 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:41:55 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains \'Pickens Butler Watson\', which is the correct answer to the question regarding the father of John B.'
+2026-03-30 13:41:55 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:42:22 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:42:22 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:42:22 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:42:49 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:42:49 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains \'Pickens Butler Watson\', which is the correct answer to the question regarding the father of John B.'
+2026-03-30 13:42:49 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:43:16 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:43:16 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:43:16 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:43:42 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:43:42 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains \'Pickens Butler Watson\', which is the correct answer to the question regarding the father of John B.'
+2026-03-30 13:43:42 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:44:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:44:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:44:09 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:44:09 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:44:36 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:44:36 - INFO - llm_judge.py - run_judge - Response: '```json \n{\n    "rationale": "The ground truth answer list contains \'Pickens Butler Watson\', which is the correct answer to the question regarding the father of John B.'
+2026-03-30 13:44:36 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:44:36 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-03-30 13:45:44 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:45:44 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:45:44 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:46:11 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:46:11 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:46:11 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:46:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:46:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:46:38 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:47:05 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:47:05 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:47:05 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:47:32 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:47:32 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:47:32 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:47:58 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:47:58 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:47:58 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:48:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:48:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:48:25 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:48:52 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:48:52 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:48:52 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:49:19 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:49:19 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:49:19 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:49:19 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:49:46 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:49:46 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:49:46 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:49:46 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:50:30 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:50:30 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:50:30 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:51:22 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:51:22 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:51:22 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:52:00 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:52:00 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:52:00 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:52:26 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:52:26 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:52:26 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:52:53 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:52:53 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:52:53 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:53:20 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:53:20 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:53:20 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:53:47 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:53:47 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:53:47 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:53:47 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:54:14 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:54:14 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:54:14 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:55:02 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:55:02 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:55:02 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:55:45 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:55:45 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:55:45 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:55:45 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:56:11 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:56:11 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:56:11 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:57:01 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:57:01 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:57:01 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:57:45 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:57:45 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:57:45 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 13:58:12 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:58:12 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer list contains \'King Wu of Zhou\'. The predicted answer provided is empty. An'
+2026-03-30 13:58:12 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 13:58:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:58:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:58:38 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 13:59:05 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:59:05 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer list contains \'King Wu of Zhou\'. The predicted answer provided is empty. An'
+2026-03-30 13:59:05 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 13:59:32 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 13:59:32 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 13:59:32 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 13:59:32 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 13:59:59 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 13:59:59 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer list contains \'King Wu of Zhou\'. The predicted answer provided is empty. An'
+2026-03-30 13:59:59 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 14:00:48 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 14:00:48 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer list contains \'King Wu of Zhou\'. The predicted answer provided is empty. An'
+2026-03-30 14:00:48 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 14:01:15 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:01:15 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:01:15 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 14:01:41 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-03-30 14:01:41 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The ground truth answer list contains \'King Wu of Zhou\'. The predicted answer provided is empty. An'
+2026-03-30 14:01:41 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 14:01:41 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-03-30 14:02:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:02:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:02:08 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 14:02:51 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:02:51 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:02:51 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 14:03:31 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:03:31 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:03:31 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 14:04:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:04:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:04:09 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 14:04:09 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 14:06:49 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:06:49 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:06:49 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 14:07:16 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:07:16 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:07:16 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-03-30 14:07:43 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:07:43 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:07:43 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 14:08:10 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:08:10 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:08:10 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-03-30 14:08:36 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:08:36 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:08:36 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 14:09:03 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:09:03 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:09:03 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-03-30 14:09:30 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:09:30 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:09:30 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 14:09:57 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:09:57 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:09:57 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-03-30 14:10:24 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:10:24 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:10:24 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 14:10:24 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-03-30 14:10:50 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-03-30 14:10:50 - INFO - llm_judge.py - run_judge - Response: ''
+2026-03-30 14:10:50 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-03-30 14:10:50 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times

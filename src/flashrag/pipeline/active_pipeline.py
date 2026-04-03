@@ -11,8 +11,8 @@ from flashrag.prompt import PromptTemplate
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from flashrag.pipeline.parallelism import INFERENCE_MAX_WORKERS
-from verl.utils.dataset.template import prompt_template_dict
-from verl.utils.reward_score.re_search import remove_boxed, last_boxed_only_string, extract_answer
+from flashrag.verl_legacy.template import prompt_template_dict
+from flashrag.verl_legacy.re_search import remove_boxed, last_boxed_only_string, extract_answer
 
 class ReSearchPipeline(BasicPipeline):
     def __init__(self, config, retriever=None, generator=None, apply_chat=False, enable_thinking=False):
@@ -25,6 +25,7 @@ class ReSearchPipeline(BasicPipeline):
         self.generator = generator
         self.apply_chat = apply_chat
         self.enable_thinking = enable_thinking
+        print(f"enable_thinking: {enable_thinking}")
         if apply_chat:
             self.prompt_template = prompt_template_dict['re_search_template_sys']
         else:
@@ -42,12 +43,37 @@ class ReSearchPipeline(BasicPipeline):
         try:
             start_tag = '<search>'
             end_tag = '</search>'
-            assert text.strip().endswith(end_tag)
             end_pos = text.rindex(end_tag)
             start_pos = text.rindex(start_tag, 0, end_pos)
             return text[start_pos + len(start_tag):end_pos].strip()
         except ValueError:
             return ""
+
+    def _extract_pred_fallback(self, final_response: str) -> str:
+        """Extract the final answer robustly even when format drifts from strict template."""
+        answer_part = extract_answer(final_response)
+        candidates = []
+        if answer_part is not None:
+            candidates.append(answer_part)
+        candidates.append(final_response)
+
+        # Prefer boxed answers when present.
+        for text in candidates:
+            boxed = last_boxed_only_string(text) if text else None
+            if boxed is None:
+                continue
+            try:
+                return remove_boxed(boxed).strip()
+            except Exception:
+                pass
+
+        # Fallback: if <answer>...</answer> exists without boxed formatting, use plain text.
+        if answer_part:
+            plain = re.sub(r"<[^>]+>", "", answer_part).strip()
+            if plain:
+                return plain
+
+        return ""
 
     def run_item(self, item):
         if self.apply_chat:
@@ -62,12 +88,43 @@ class ReSearchPipeline(BasicPipeline):
         item.update_output("query", query)
 
         remain_length = self.config['generator_max_input_len']
+        max_search_turns = 8
+        step_limit = 512
+        turns = 0
         over_length_flag = False
-        while remain_length > 0:
-            response = self.generator.generate(input_list=[query], return_raw_output=True, stop=['</search>'], max_new_tokens=remain_length)
+        stop_tokens = ['</search>', '</answer>', '<|im_end|>', '<|endoftext|>']
+        # Defaults so we can safely update outputs even if generation stops early.
+        prompt_tokens = 0
+        completion_tokens = 0
+        stop_reason = ''
+        stop_matched = ''
+        while remain_length > 0 and turns < max_search_turns:
+            curr_step_max_new_tokens = max(1, min(remain_length, step_limit))
+            response = self.generator.generate(
+                input_list=[query],
+                return_raw_output=True,
+                stop=stop_tokens,
+                max_new_tokens=curr_step_max_new_tokens
+            )
             response = response[0]
-            stop_reason = response['meta_info']['finish_reason'].get('type', '')
-            stop_matched = response['meta_info']['finish_reason'].get('matched', '')
+            meta_info = response.get('meta_info', {})
+            finish_reason = meta_info.get('finish_reason', {})
+            if isinstance(finish_reason, dict):
+                stop_reason = finish_reason.get('type', '')
+                stop_matched = finish_reason.get('matched', '')
+            else:
+                stop_reason = finish_reason
+                stop_matched = ''
+
+            # Compute token counts before any potential early `break` so
+            # these variables are always initialized.
+            prompt_tokens = int(meta_info.get('prompt_tokens', 0) or 0)
+            completion_tokens = int(meta_info.get('completion_tokens', 0) or 0)
+            if prompt_tokens > 0 or completion_tokens > 0:
+                remain_length = self.config['generator_max_input_len'] - (prompt_tokens + completion_tokens)
+            else:
+                remain_length -= curr_step_max_new_tokens
+            turns += 1
             
             if stop_reason == 'stop' and isinstance(stop_matched, str) and '</search>' in stop_matched:
                 output_str = response['text'] + '</search>'
@@ -84,8 +141,17 @@ class ReSearchPipeline(BasicPipeline):
                     retrieval_text = 'nothing to search'
 
                 query += f"{output_str} <result>\n{retrieval_text}\n</result>"
-            elif stop_reason == 'stop' and (stop_matched == 151643 or stop_matched == 151645):
+            elif stop_reason == 'stop' and (
+                stop_matched == 151643
+                or stop_matched == 151645
+                or (isinstance(stop_matched, str) and stop_matched in {'<|im_end|>', '<|endoftext|>', '</answer>'})
+            ):
                 output_str = response['text']
+                # Some generators put the stop token into `meta_info.finish_reason.matched`
+                # but not into `response["text"]`. Ensure the closing `</answer>` tag is
+                # present so downstream `<answer>...</answer>` extraction works.
+                if isinstance(stop_matched, str) and stop_matched == '</answer>' and '</answer>' not in output_str:
+                    output_str += '</answer>'
                 query += f"{output_str}"
                 break
             elif stop_reason == 'length':
@@ -95,23 +161,36 @@ class ReSearchPipeline(BasicPipeline):
                 break
             else:
                 raise ValueError(f"stop_reason: {stop_reason}, stop_matched: {stop_matched}")
-                
-            remain_length = self.config['generator_max_input_len'] - (response['meta_info']['prompt_tokens'] + response['meta_info']['completion_tokens'])
         
         final_response = query.replace(init_query, "")
-        item.update_output("final_response", final_response)
 
-        if over_length_flag:
+        item.update_output("final_response", final_response)
+        item.update_output("stop_reason", stop_reason)
+        item.update_output("stop_matched_idx", stop_matched)
+        # `stop_matched` can be either a token id (int) or a token string (e.g. "<|im_end|>").
+        # HuggingFace tokenizers expect ids for `decode()`, so guard against str inputs.
+        if stop_matched is None or stop_matched == "":
+            stop_matched_text = ""
+        elif isinstance(stop_matched, str):
+            stop_matched_text = stop_matched
+        else:
+            try:
+                if isinstance(stop_matched, (list, tuple)):
+                    stop_matched_text = self.tokenizer.decode(stop_matched)
+                else:
+                    stop_matched_text = self.tokenizer.decode([int(stop_matched)])
+            except Exception:
+                stop_matched_text = str(stop_matched)
+        item.update_output("stop_matched_text", stop_matched_text)
+        item.update_output("prompt_tokens", prompt_tokens)
+        item.update_output("completion_tokens", completion_tokens)
+        item.update_output("remain_length", remain_length)
+
+        # Even on length stop, try robust extraction to avoid silent empty predictions.
+        answer = self._extract_pred_fallback(final_response)
+        if over_length_flag and answer == "":
             item.update_output("pred", "")
         else:
-            answer_part = extract_answer(final_response)
-            if answer_part is not None:
-                try:
-                    answer = remove_boxed(last_boxed_only_string(answer_part))
-                except Exception as e:
-                    answer = ''
-            else:
-                answer = ""
             item.update_output("pred", answer)
 
         
