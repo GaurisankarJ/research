@@ -43,6 +43,7 @@ trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_base_grpo_1gpu}"
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
 SAVE_FREQ=-1
 # SAVE_FREQ="${SAVE_FREQ:-10}"
+RESUME_MODE="${RESUME_MODE:-disable}"
 
 RAY_DATA_HOME=${RAY_DATA_HOME:-"${HOME}/verl"}
 MODEL_PATH=${MODEL_PATH:-"${REPO_ROOT}/models/Qwen3-0.6B-Base"}
@@ -152,6 +153,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.logger="[console, wandb]" \
     trainer.rollout_data_dir=${ROLLOUT_SAVE_PATH} \
     trainer.default_local_dir=${CKPTS_DIR} \
+    trainer.resume_mode=${RESUME_MODE} \
     trainer.n_gpus_per_node=$trainer_n_gpus_per_node \
     trainer.nnodes=$trainer_nnodes \
     trainer.save_freq=${SAVE_FREQ} \

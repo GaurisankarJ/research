@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# GRPO + vLLM — Qwen3-0.6B-Instruct, profile **~80GB** VRAM (A100-80GB / H100 class, single GPU colocated FSDP + vLLM + re_search).
-# Aggressive throughput vs gpu40: larger batches, GRPO n, vLLM concurrency, context. If OOM: lower ``VLLM_GPU_MEM_UTIL`` first.
+# GRPO with vLLM — Qwen3-0.6B-Instruct (chat template). Same layout as run_qwen3_0.6b_grpo_vllm.sh (base uses plain encode).
+# Larger GPUs: ``run_qwen3_0.6b_grpo_vllm_instruct_gpu40.sh`` (~40GB), ``run_qwen3_0.6b_grpo_vllm_instruct_gpu80.sh`` (~80GB).
 # Flags: --add_qwen_chat → +data.re_search_add_qwen_chat=true (manual <|im_start|>…); --add_thinking → +data.re_search_add_thinking=true (\\n only after assistant; default leaves empty <redacted_thinking> block).
 # With --add_qwen_chat, rollout JSONL ``input`` is decoded with specials kept (trainer.rollout_prompt_log_skip_special_tokens=false) so it matches vLLM; otherwise specials are stripped and ``input`` looks like plain role lines.
 # Override MODEL_PATH, TRAIN_FILE, TEST_FILE. W&B: verl_latest/.env (WANDB_API_KEY, WANDB_ENTITY, WANDB_PROJECT, WANDB_EXPERIMENT_NAME).
@@ -60,11 +60,12 @@ trainer_n_gpus_per_node=1
 trainer_nnodes=1
 # Hydra trainer.project_name / experiment_name → wandb.init(project=, name=). Project defaults from WANDB_PROJECT above.
 trainer_project_name="${WANDB_PROJECT}"
-trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu80}"
+trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_1gpu}"
 # Checkpoints: ray_trainer only saves when save_freq > 0. -1 disables checkpoint writes (smoke tests).
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
 SAVE_FREQ=-1
 # SAVE_FREQ="${SAVE_FREQ:-10}"
+RESUME_MODE="${RESUME_MODE:-disable}"
 
 RAY_DATA_HOME=${RAY_DATA_HOME:-"${HOME}/verl"}
 # Match train_instruct.sh intent; override if your checkpoint lives under models/Qwen3-0.6B only.
@@ -88,16 +89,27 @@ LOG_PATH="${RAY_DATA_HOME}/logs/${trainer_project_name}/${trainer_experiment_nam
 
 use_dynamic_bsz=True
 
-train_batch_size="${TRAIN_BATCH_SIZE:-4}"
-ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-4}"
+# Tuned for one GPU; increase train_batch_size / ppo_mini_batch_size on larger GPUs if memory allows
+# train_batch_size=64
+# ppo_mini_batch_size=32
+train_batch_size=1
+ppo_mini_batch_size=1
 
-vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.48}"
-# Room for long multi-turn ReSearch traces + 8k response cap.
+# vLLM memory (22GB L4 / 40GB A100 colocate): weights are tiny but vLLM reserves
+# gpu_memory_utilization * total VRAM for KV/batch; defaults + long max_model_len blow the budget.
+#
+# L4 smoke-test defaults: aggressively reduce KV/microbatch concurrency.
+vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.16}"
+# vLLM KV / context cap (raise with VLLM_MAX_MODEL_LEN if you override below).
 vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-8192}"
+# FSDP actor + ref log-prob: must be >= longest tokenized sample (prompt+response; re_search can grow toward max_model_len).
+# Previously 512 caused: AssertionError max_token_len=512 < max_seq_len=1665+ in compute_log_prob.
 max_seq_tokens_per_gpu="${MAX_SEQ_TOKENS_PER_GPU:-${vllm_max_model_len}}"
 vllm_max_num_seqs="${VLLM_MAX_NUM_SEQS:-2}"
+# GRPO: completions per prompt (not GPUs). With 1 GPU, high rollout_n × long max_response_length is heavy; override ROLLOUT_N or rollout_n here.
 rollout_n="${ROLLOUT_N:-5}"
-rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-16384}"
+# vLLM scheduler: cap on total tokens in a batch step (raise on big GPUs; see *_gpu40 / *_gpu80 scripts).
+rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-1024}"
 # Must be ≥ largest single weight tensor. Qwen3 embed_tokens is ~622MB float32 (151936×1024).
 # Below that you get AssertionError in bucketed_weight_transfer. Override if you change model.
 update_weights_bucket_megabytes="${UPDATE_WEIGHTS_BUCKET_MEGABYTES:-1024}"
@@ -150,7 +162,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=False \
     actor_rollout_ref.rollout.enforce_eager=True \
     actor_rollout_ref.rollout.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
-    actor_rollout_ref.rollout.agent.num_workers=2 \
+    actor_rollout_ref.rollout.agent.num_workers=1 \
     actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=${max_seq_tokens_per_gpu} \
     actor_rollout_ref.rollout.enable_chunked_prefill=True \
     actor_rollout_ref.rollout.prompt_length=512 \
@@ -178,6 +190,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.rollout_prompt_log_skip_special_tokens=${ROLLOUT_PROMPT_LOG_SKIP_SPECIAL_TOKENS} \
     trainer.rollout_data_dir=${ROLLOUT_SAVE_PATH} \
     trainer.default_local_dir=${CKPTS_DIR} \
+    trainer.resume_mode=${RESUME_MODE} \
     trainer.n_gpus_per_node=$trainer_n_gpus_per_node \
     trainer.nnodes=$trainer_nnodes \
     trainer.save_freq=${SAVE_FREQ} \

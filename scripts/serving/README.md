@@ -87,7 +87,7 @@ curl -X POST "http://127.0.0.1:3000/search" \
 ### Batch Search
 
 ```bash
-curl -X POST "http://127.0.0.1:3000/batch_search" \
+curl -X POST "http://127.0.0.1:3005/batch_search" \
   -H "Content-Type: application/json" \
   -d '{
     "query": [

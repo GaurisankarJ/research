@@ -81,6 +81,17 @@ def extract_search_content(text: str) -> str:
         return ""
 
 
+def _decode_token_pieces(tokenizer: Any, token_ids: list[int]) -> list[str]:
+    """One decoded string per token id (same order as ``token_ids``)."""
+    pieces: list[str] = []
+    for tid in token_ids:
+        try:
+            pieces.append(tokenizer.decode([tid], skip_special_tokens=False))
+        except Exception:
+            pieces.append(f"<decode_err:{tid}>")
+    return pieces
+
+
 def classify_last_segment_no_valid_search(seg_text: str) -> str:
     """Why ``need_search`` is false for this LM segment (paired ``<search>q</search>`` with non-empty ``q``)."""
     has_close = "</search>" in seg_text
@@ -159,6 +170,10 @@ def _format_termination_reason(code: str, digest: dict[str, Any]) -> str:
     ]
     if digest.get("last_segment_no_valid_search_class"):
         parts.append(f"last_seg_no_search={digest['last_segment_no_valid_search_class']}")
+    if digest.get("last_lm_end_token_id") is not None:
+        parts.append(f"end_tok={digest['last_lm_end_token_id']}")
+    if digest.get("last_lm_stop_reason") is not None:
+        parts.append(f"lm_stop={digest['last_lm_stop_reason']}")
     if digest.get("at_response_budget_cap"):
         parts.append("at_budget_cap")
     return " | ".join(parts)
@@ -212,6 +227,9 @@ class ReSearchAgentLoop(AgentLoopBase):
         termination_code = "in_progress"
         last_lm_segment_text: str | None = None
         last_segment_no_search_class: str | None = None
+        last_lm_end_token_id: int | None = None
+        last_lm_stop_reason: str | None = None
+        last_lm_segment_token_ids: list[int] | None = None
 
         with simple_timer("generate_sequences", timing):
             while len(response_tokens) < self.response_length and search_segments < self.search_max_turns:
@@ -240,6 +258,10 @@ class ReSearchAgentLoop(AgentLoopBase):
                 if not new_ids:
                     termination_code = "empty_model_output"
                     break
+
+                last_lm_end_token_id = new_ids[-1]
+                last_lm_stop_reason = output.stop_reason
+                last_lm_segment_token_ids = list(new_ids)
 
                 seg_text = self.tokenizer.decode(new_ids, skip_special_tokens=False)
                 last_lm_segment_text = seg_text
@@ -304,6 +326,21 @@ class ReSearchAgentLoop(AgentLoopBase):
         if last_lm_segment_text:
             merged_digest["last_lm_segment_head_preview"] = last_lm_segment_text[:220]
             merged_digest["last_lm_segment_tail_preview"] = last_lm_segment_text[-220:]
+        if last_lm_end_token_id is not None:
+            merged_digest["last_lm_end_token_id"] = last_lm_end_token_id
+        if last_lm_stop_reason is not None:
+            merged_digest["last_lm_stop_reason"] = last_lm_stop_reason
+        if last_lm_end_token_id is not None:
+            try:
+                piece = self.tokenizer.decode([last_lm_end_token_id], skip_special_tokens=False)
+                merged_digest["last_lm_end_token_piece"] = piece if len(piece) <= 64 else piece[:61] + "..."
+            except Exception:
+                merged_digest["last_lm_end_token_piece"] = None
+        if last_lm_segment_token_ids is not None:
+            merged_digest["last_lm_segment_token_ids"] = last_lm_segment_token_ids
+            merged_digest["last_lm_segment_decoded_pieces"] = _decode_token_pieces(
+                self.tokenizer, last_lm_segment_token_ids
+            )
 
         termination_reason = _format_termination_reason(termination_code, merged_digest)
 

@@ -67,6 +67,9 @@ fi
 # Single GPU (set e.g. CUDA_VISIBLE_DEVICES=0 before launch if multiple GPUs are visible)
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 
+# Hydra: full Python tracebacks (default is abbreviated)
+export HYDRA_FULL_ERROR="${HYDRA_FULL_ERROR:-1}"
+
 # Colocated FSDP actor + ref + vLLM on one GPU: reduce allocator fragmentation during weight sync
 export PYTORCH_ALLOC_CONF="${PYTORCH_ALLOC_CONF:-expandable_segments:True}"
 
@@ -78,11 +81,12 @@ trainer_n_gpus_per_node=1
 trainer_nnodes=1
 # Hydra trainer.project_name / experiment_name → wandb.init(project=, name=). Project defaults from WANDB_PROJECT above.
 trainer_project_name="${WANDB_PROJECT}"
-trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu40}"
+trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_40gb}"
 # Checkpoints: ray_trainer only saves when save_freq > 0. -1 disables checkpoint writes (smoke tests).
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
-SAVE_FREQ=10
-# SAVE_FREQ="${SAVE_FREQ:-10}"
+SAVE_FREQ="${SAVE_FREQ:-1000}"
+# Hydra default resume_mode=auto reloads latest global_step_* under CKPTS_DIR. Use RESUME_MODE=auto to resume.
+RESUME_MODE="${RESUME_MODE:-disable}"
 
 RAY_DATA_HOME=${RAY_DATA_HOME:-"${HOME}/verl"}
 # Match train_instruct.sh intent; override if your checkpoint lives under models/Qwen3-0.6B only.
@@ -93,7 +97,8 @@ TEST_FILE=${TEST_FILE:-"${REPO_ROOT}/data/musique/test.parquet"}
 
 mkdir -p "${CKPTS_DIR}"
 # Per-step JSONL: prompt, full response (incl. <search>/<result>), raw chat messages, num_turns, num_search_calls.
-ROLLOUT_SAVE_PATH="${ROLLOUT_SAVE_PATH:-${CKPTS_DIR}/rollout}"
+timestamp="$(date +%Y%m%d_%H%M%S)"
+ROLLOUT_SAVE_PATH="${ROLLOUT_SAVE_PATH:-${CKPTS_DIR}/rollout_${timestamp}}"
 mkdir -p "${ROLLOUT_SAVE_PATH}"
 if [ "${WANDB_API_KEY}" != "None" ] && [ -n "${WANDB_API_KEY}" ]; then
   wandb login --relogin "${WANDB_API_KEY}"
@@ -108,27 +113,37 @@ use_dynamic_bsz=True
 
 # Training batch: raise until actor/ref OOM. ``GEN_BATCH_SIZE`` (optional) can exceed this to feed vLLM fatter rollout steps
 # (defaults to ``TRAIN_BATCH_SIZE``). Example: ``TRAIN_BATCH_SIZE=8 GEN_BATCH_SIZE=16`` if rollout stalls on GPU.
-train_batch_size="${TRAIN_BATCH_SIZE:-16}"
-ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-16}"
+train_batch_size="${TRAIN_BATCH_SIZE:-8}"
+ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-8}"
+# train_batch_size="${TRAIN_BATCH_SIZE:-16}"
+# ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-16}"
 gen_batch_size="${GEN_BATCH_SIZE:-${train_batch_size}}"
 
 # CPU: more dataloader workers → less GPU idle waiting on parquet decode (override ``DATALOADER_NUM_WORKERS``).
-dataloader_num_workers="${DATALOADER_NUM_WORKERS:-6}"
+dataloader_num_workers="${DATALOADER_NUM_WORKERS:-8}"
 
 # vLLM: colocated on 40GB — if ~10GiB+ still free, raise ``VLLM_GPU_MEM_UTIL`` / ``VLLM_MAX_NUM_SEQS`` / batched tokens first.
 # OOM on ``update_weights`` → lower mem util before batch size.
-vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.58}"
-vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-8192}"
-max_seq_tokens_per_gpu="${MAX_SEQ_TOKENS_PER_GPU:-${vllm_max_model_len}}"
+vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.72}"
+
+vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-3072}"
+max_prompt_length="${MAX_PROMPT_LENGTH:-512}"
+max_response_length="${MAX_RESPONSE_LENGTH:-2048}"
+
+max_token_len_per_gpu="${MAX_TOKEN_LEN_PER_GPU:-5120}"
+max_rollout_logprob_token_len_per_gpu="${MAX_ROLLOUT_LOGPROB_TOKEN_LEN_PER_GPU:-6144}"
+max_ref_logprob_token_len_per_gpu="${MAX_REF_LOGPROB_TOKEN_LEN_PER_GPU:-6144}"
+
 vllm_max_num_seqs="${VLLM_MAX_NUM_SEQS:-12}"
 rollout_n="${ROLLOUT_N:-5}"
 rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-16384}"
-rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-2}"
+# Must divide the per-step prompt batch (typically train_batch_size × rollout_n with GRPO); else DataProto.chunk fails.
+rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-${rollout_n}}"
 
 # Speed vs memory: ``USE_TORCH_COMPILE=True`` can lift actor throughput (test stability). ``GRADIENT_CHECKPOINTING=False`` uses
 # more VRAM but faster backward — only if you still have headroom.
-use_torch_compile="${USE_TORCH_COMPILE:-False}"
-gradient_checkpointing="${GRADIENT_CHECKPOINTING:-True}"
+use_torch_compile="${USE_TORCH_COMPILE:-True}"
+gradient_checkpointing="${GRADIENT_CHECKPOINTING:-False}"
 # Must be ≥ largest single weight tensor. Qwen3 embed_tokens is ~622MB float32 (151936×1024).
 # Below that you get AssertionError in bucketed_weight_transfer. Override if you change model.
 update_weights_bucket_megabytes="${UPDATE_WEIGHTS_BUCKET_MEGABYTES:-1024}"
@@ -162,8 +177,8 @@ python3 -m verl.trainer.main_ppo \
     data.train_batch_size=${train_batch_size} \
     +data.gen_batch_size=${gen_batch_size} \
     data.dataloader_num_workers=${dataloader_num_workers} \
-    data.max_prompt_length=512 \
-    data.max_response_length=8192 \
+    data.max_prompt_length=${max_prompt_length} \
+    data.max_response_length=${max_response_length} \
     data.filter_overlong_prompts=True \
     data.truncation='error' \
     actor_rollout_ref.model.path=${MODEL_PATH} \
@@ -177,17 +192,17 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
     actor_rollout_ref.actor.use_torch_compile=${use_torch_compile} \
     actor_rollout_ref.actor.use_dynamic_bsz=${use_dynamic_bsz} \
-    actor_rollout_ref.actor.ppo_max_token_len_per_gpu=${max_seq_tokens_per_gpu} \
+    actor_rollout_ref.actor.ppo_max_token_len_per_gpu=${max_token_len_per_gpu} \
     actor_rollout_ref.model.enable_gradient_checkpointing=${gradient_checkpointing} \
     actor_rollout_ref.actor.fsdp_config.param_offload=False \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=False \
-    actor_rollout_ref.rollout.enforce_eager=True \
+    actor_rollout_ref.rollout.enforce_eager=False \
     actor_rollout_ref.rollout.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
     actor_rollout_ref.rollout.agent.num_workers=${rollout_agent_num_workers} \
-    actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=${max_seq_tokens_per_gpu} \
+    actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=${max_rollout_logprob_token_len_per_gpu} \
     actor_rollout_ref.rollout.enable_chunked_prefill=True \
-    actor_rollout_ref.rollout.prompt_length=512 \
-    actor_rollout_ref.rollout.response_length=8192 \
+    actor_rollout_ref.rollout.prompt_length=${max_prompt_length} \
+    actor_rollout_ref.rollout.response_length=${max_response_length} \
     actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
     actor_rollout_ref.rollout.name=vllm \
     actor_rollout_ref.rollout.gpu_memory_utilization=${vllm_gpu_mem_util} \
@@ -199,7 +214,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.rollout.agent.default_agent_loop=${ROLLOUT_AGENT} \
     +actor_rollout_ref.rollout.search_url="${SEARCH_URL}" \
     actor_rollout_ref.ref.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
-    actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=${max_seq_tokens_per_gpu} \
+    actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=${max_ref_logprob_token_len_per_gpu} \
     actor_rollout_ref.ref.fsdp_config.param_offload=False \
     actor_rollout_ref.ref.use_torch_compile=False \
     reward.reward_manager.name=re_search \
@@ -211,6 +226,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.rollout_prompt_log_skip_special_tokens=${ROLLOUT_PROMPT_LOG_SKIP_SPECIAL_TOKENS} \
     trainer.rollout_data_dir=${ROLLOUT_SAVE_PATH} \
     trainer.default_local_dir=${CKPTS_DIR} \
+    trainer.resume_mode=${RESUME_MODE} \
     trainer.n_gpus_per_node=$trainer_n_gpus_per_node \
     trainer.nnodes=$trainer_nnodes \
     trainer.save_freq=${SAVE_FREQ} \
