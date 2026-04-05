@@ -248,6 +248,8 @@ class RolloutConfig(BaseConfig):
     search_url: Optional[str] = None
     search_top_n: int = 5
     search_max_turns: int = 32
+    # Seconds for connect+read on POST ``{search_url}/batch_search`` (re_search_agent). Env VERL_SEARCH_HTTP_TIMEOUT overrides default.
+    search_http_timeout_s: float = 300.0
 
     # Checkpoint Engine config for update weights from trainer to rollout
     checkpoint_engine: CheckpointEngineConfig = field(default_factory=CheckpointEngineConfig)

@@ -15,7 +15,6 @@ from __future__ import annotations
 import logging
 import os
 import time
-from functools import wraps
 from typing import Any
 from uuid import uuid4
 
@@ -34,40 +33,62 @@ logger = logging.getLogger(__name__)
 logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "WARN"))
 
 
-def retry(max_attempts: int = 5, sleep_s: int = 1):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            for i in range(max_attempts):
-                try:
-                    return func(*args, **kwargs)
-                except Exception:
-                    if i == max_attempts - 1:
-                        logger.exception("%s failed after %s attempts", func.__name__, max_attempts)
-                        raise
-                    time.sleep(sleep_s)
-
-        return wrapper
-
-    return decorator
+def _retriever_failed_results(queries: list[str], reason: str) -> list[str]:
+    """One placeholder per query so the LM still receives ``<result>...</result>`` and training can continue."""
+    msg = f"Retriever failed: {reason}"
+    return [msg] * len(queries)
 
 
-@retry(max_attempts=5, sleep_s=1)
-def _batch_search_http(search_url: str, queries: list[str], top_n: int) -> list[str]:
+def _batch_search_http_attempt(search_url: str, queries: list[str], top_n: int, timeout_s: float) -> list[str]:
+    """Single POST + parse; raises on HTTP/JSON/shape errors (caller may retry)."""
     import requests
 
-    if len(queries) == 0:
-        return []
     url = f"{search_url.rstrip('/')}/batch_search"
-    resp = requests.post(url, json={"query": queries, "top_n": top_n}, timeout=120)
+    resp = requests.post(url, json={"query": queries, "top_n": top_n}, timeout=timeout_s)
     resp.raise_for_status()
+    payload = resp.json()
     result_list: list[str] = []
-    for item in resp.json():
+    for item in payload:
         curr = ""
         for line in item:
             curr += f"{line['contents']}\n\n"
         result_list.append(curr.strip())
+    if len(result_list) != len(queries):
+        raise ValueError(
+            f"result count mismatch (got {len(result_list)}, expected {len(queries)})"
+        )
     return result_list
+
+
+def _batch_search_http(
+    search_url: str,
+    queries: list[str],
+    top_n: int,
+    timeout_s: float,
+    *,
+    max_attempts: int = 5,
+    sleep_s: float = 1.0,
+) -> list[str]:
+    """Same as legacy ``@retry(5)`` on HTTP retrieval; after all attempts fail, return placeholders (no raise)."""
+    if len(queries) == 0:
+        return []
+    if max_attempts < 1:
+        raise ValueError("max_attempts must be >= 1")
+    last_exc: Exception | None = None
+    for i in range(max_attempts):
+        try:
+            return _batch_search_http_attempt(search_url, queries, top_n, timeout_s)
+        except Exception as e:
+            last_exc = e
+            if i < max_attempts - 1:
+                time.sleep(sleep_s)
+                continue
+            logger.warning(
+                "batch_search failed after %s attempts: %s",
+                max_attempts,
+                last_exc,
+            )
+            return _retriever_failed_results(queries, str(last_exc))
 
 
 def extract_search_content(text: str) -> str:
@@ -192,6 +213,11 @@ class ReSearchAgentLoop(AgentLoopBase):
         self.search_max_turns = int(
             OmegaConf.select(self.config, "actor_rollout_ref.rollout.search_max_turns", default=32)
         )
+        cfg_timeout = OmegaConf.select(self.config, "actor_rollout_ref.rollout.search_http_timeout_s", default=None)
+        if cfg_timeout is not None:
+            self.search_http_timeout_s = float(cfg_timeout)
+        else:
+            self.search_http_timeout_s = float(os.getenv("VERL_SEARCH_HTTP_TIMEOUT", "300"))
 
     async def run(self, sampling_params: dict[str, Any], **kwargs) -> AgentLoopOutput:
         if self.processor is not None:
@@ -283,7 +309,9 @@ class ReSearchAgentLoop(AgentLoopBase):
                 queries = [extract_search_content(seg_text)]
                 results = await self.loop.run_in_executor(
                     None,
-                    lambda q=queries: _batch_search_http(self.search_url, q, self.search_top_n),
+                    lambda q=queries: _batch_search_http(
+                        self.search_url, q, self.search_top_n, self.search_http_timeout_s
+                    ),
                 )
                 result_text = results[0] if results else ""
                 result_suffix = f" <result>\n{result_text}\n</result>"

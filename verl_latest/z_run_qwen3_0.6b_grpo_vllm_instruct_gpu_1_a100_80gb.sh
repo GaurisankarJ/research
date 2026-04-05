@@ -123,22 +123,23 @@ gen_batch_size="${GEN_BATCH_SIZE:-8}"
 # CPU: more dataloader workers → less GPU idle waiting on parquet decode (override ``DATALOADER_NUM_WORKERS``).
 dataloader_num_workers="${DATALOADER_NUM_WORKERS:-8}"
 
-# vLLM: 80GB — higher KV/batch caps than 40GB; OOM on ``update_weights`` → lower ``VLLM_GPU_MEM_UTIL`` before batch size.
-vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.72}"
 
+# FIXED HYPERPARAMETERS
 vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-9216}"
 max_prompt_length="${MAX_PROMPT_LENGTH:-512}"
 max_response_length="${MAX_RESPONSE_LENGTH:-8192}"
+rollout_n="${ROLLOUT_N:-5}"
 
 max_token_len_per_gpu="${MAX_TOKEN_LEN_PER_GPU:-24576}"
 max_rollout_logprob_token_len_per_gpu="${MAX_ROLLOUT_LOGPROB_TOKEN_LEN_PER_GPU:-24576}"
 max_ref_logprob_token_len_per_gpu="${MAX_REF_LOGPROB_TOKEN_LEN_PER_GPU:-24576}"
 
+# vLLM: 80GB — higher KV/batch caps than 40GB; OOM on ``update_weights`` → lower ``VLLM_GPU_MEM_UTIL`` before batch size.
+vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.72}"
 vllm_max_num_seqs="${VLLM_MAX_NUM_SEQS:-6}"
-rollout_n="${ROLLOUT_N:-5}"
 rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-14336}"
 # Must divide the per-step prompt batch (typically train_batch_size × rollout_n with GRPO); else DataProto.chunk fails.
-rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-${rollout_n}}"
+rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-2}"
 
 # Speed vs memory: 80GB often allows ``GRADIENT_CHECKPOINTING=False`` for faster backward; set True if actor OOM.
 use_torch_compile="${USE_TORCH_COMPILE:-True}"
@@ -152,6 +153,8 @@ update_weights_bucket_megabytes="${UPDATE_WEIGHTS_BUCKET_MEGABYTES:-1024}"
 # ``re_search_agent_loop._batch_search_http``. Default port matches a typical local wiki/search server; override
 # host/port to your service, or set ``SEARCH_URL=`` for empty URL → ``single_turn_agent`` (no HTTP during rollout).
 SEARCH_URL="${SEARCH_URL:-http://127.0.0.1:3005}"
+# Connect+read timeout (seconds) per attempt for POST ``{search_url}/batch_search``; 5 attempts with 1s backoff, then LM gets ``Retriever failed: …``.
+SEARCH_HTTP_TIMEOUT_S="${SEARCH_HTTP_TIMEOUT_S:-300}"
 ROLLOUT_AGENT="${ROLLOUT_AGENT:-single_turn_agent}"
 if [ -n "${SEARCH_URL}" ]; then
   ROLLOUT_AGENT=re_search_agent
@@ -211,6 +214,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=${update_weights_bucket_megabytes} \
     actor_rollout_ref.rollout.agent.default_agent_loop=${ROLLOUT_AGENT} \
     +actor_rollout_ref.rollout.search_url="${SEARCH_URL}" \
+    +actor_rollout_ref.rollout.search_http_timeout_s="${SEARCH_HTTP_TIMEOUT_S}" \
     actor_rollout_ref.ref.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
     actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=${max_ref_logprob_token_len_per_gpu} \
     actor_rollout_ref.ref.fsdp_config.param_offload=False \
