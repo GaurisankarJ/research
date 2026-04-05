@@ -44,6 +44,8 @@ From `scripts/serving`:
 
 ```bash
 python retriever_serving.py --config retriever_config.yaml --num_retriever 1 --port 3005
+
+python retriever_serving.py --config retriever_config.yaml --num_retriever 2 --port 3005
 ```
 
 Server runs at `http://127.0.0.1:3000`.

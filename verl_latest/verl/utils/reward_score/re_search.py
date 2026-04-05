@@ -174,8 +174,8 @@ def compute_score(
 
     ``solution_str`` may be a full chat decode or **response-only** (as passed by ``NaiveRewardManager``).
 
-    If ``tokenizer`` is set and defines ``eos_token``, an EOS suffix is stripped when present; truncated
-    responses (no EOS) still score so RL + DAPO (which may strip EOS before scoring) remain usable.
+    If ``tokenizer`` is set and defines ``eos_token``, the response must end with EOS (legacy behavior);
+    otherwise reward is zero (``over length``). EOS is stripped before answer extraction.
     """
     response = _extract_response_text(solution_str)
     valid_template, reason = validate_format(response)
@@ -184,7 +184,9 @@ def compute_score(
 
     if tokenizer is not None:
         eos_token = getattr(tokenizer, "eos_token", None)
-        if eos_token and response.endswith(eos_token):
+        if eos_token:
+            if not response.endswith(eos_token):
+                return 0.0, "over length"
             response = response[: -len(eos_token)]
 
     gt = _normalize_ground_truth(ground_truth)

@@ -421,14 +421,23 @@ class RayPPOTrainer:
                 base_data[k] = v
 
         lines = []
+        row_dicts = []
         for i in range(n):
             entry = {k: v[i] for k, v in base_data.items()}
+            row_dicts.append(entry)
             lines.append(json.dumps(entry, ensure_ascii=False))
 
         with open(filename, "w") as f:
             f.write("\n".join(lines) + "\n")
 
         print(f"Dumped generations to {filename}")
+
+        try:
+            from verl.utils.weave_rollout import log_jsonl_rows
+
+            log_jsonl_rows(self.global_steps, row_dicts)
+        except Exception as e:
+            print(f"Warning: Weave rollout logging failed (continuing): {e}")
 
     def _log_rollout_data(
         self, batch: DataProto, reward_extra_infos_dict: dict, timing_raw: dict, rollout_data_dir: str

@@ -79,6 +79,12 @@ class Tracking:
             entity = os.environ.get("WANDB_ENTITY", None)
             wandb.init(project=project_name, name=experiment_name, entity=entity, config=config, settings=settings)
             self.logger["wandb"] = wandb
+            try:
+                from verl.utils import weave_rollout
+
+                weave_rollout.init_from_tracking_config(config)
+            except Exception as e:
+                logger.warning("Weave rollout init skipped: %s", e)
 
         if "trackio" in default_backend:
             import trackio
@@ -184,6 +190,12 @@ class Tracking:
                 logger_instance.log(data=data, step=step)
 
     def __del__(self):
+        try:
+            from verl.utils import weave_rollout
+
+            weave_rollout.finish()
+        except Exception:
+            pass
         if "wandb" in self.logger:
             self.logger["wandb"].finish(exit_code=0)
         if "swanlab" in self.logger:

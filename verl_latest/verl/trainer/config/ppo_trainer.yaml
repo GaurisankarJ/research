@@ -141,6 +141,10 @@ trainer:
   # Directory for logging rollout data; no dump if null
   rollout_data_dir: null
 
+  # If true, mirror each JSONL row to W&B Weave (calls ``verl_rollout_jsonl_row``) during training.
+  # Requires ``pip install weave``, ``wandb`` in ``logger``, and optional ``WEAVE_ROLLOUT_LIVE=1``.
+  weave_rollout_live: false
+
   # If true, JSONL rollout ``input`` uses ``batch_decode(..., skip_special_tokens=True)`` (chat specials hidden).
   rollout_prompt_log_skip_special_tokens: true
 

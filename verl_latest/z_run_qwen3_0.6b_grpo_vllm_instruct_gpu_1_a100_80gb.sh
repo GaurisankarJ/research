@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GRPO + vLLM — Qwen3-0.6B-Instruct, profile **~40GB** VRAM (A100-40GB class, single GPU colocated FSDP + vLLM + re_search).
+# GRPO + vLLM — Qwen3-0.6B-Instruct, profile **~80GB** VRAM (A100-80GB, single GPU colocated FSDP + vLLM + re_search).
 # Tuned vs ``run_qwen3_0.6b_grpo_vllm_instruct.sh`` (L4/smoke): higher vLLM KV budget, batching, GRPO width, train batch.
 # If CUDA OOM: lower ``VLLM_GPU_MEM_UTIL`` (e.g. 0.32) or ``VLLM_MAX_MODEL_LEN`` / ``ROLLOUT_N``. See header in base script.
 # Flags: --add_qwen_chat → +data.re_search_add_qwen_chat=true (manual <|im_start|>…); --add_thinking → +data.re_search_add_thinking=true (\\n only after assistant; default leaves empty <redacted_thinking> block).
@@ -9,12 +9,12 @@
 # --- vs ``scripts/train/train.sh`` (multi-GPU legacy recipe) ---
 # | train.sh | this run (verl_latest) |
 # | 4× GPU, TP=2 rollout | 1× GPU, ``tensor_model_parallel_size=1`` |
-# | ``train_batch_size=256`` (split across GPUs) | ``TRAIN_BATCH_SIZE=16`` (raise env until OOM); optional ``GEN_BATCH_SIZE`` |
+# | ``train_batch_size=256`` (split across GPUs) | ``TRAIN_BATCH_SIZE=8`` (raise env until OOM); optional ``GEN_BATCH_SIZE`` |
 # | ``Qwen3-0.6B-Base`` + ``data.apply_chat`` | Instruct + ``+data.re_search_use_chat_format`` + ``re_search_template_sys`` |
 # | ``reward_model.reward_manager`` | ``reward.reward_manager.name=re_search`` |
 # | ``vllm_with_search`` (name may be absent in verl_latest) | ``rollout.name=vllm`` + ``default_agent_loop=re_search_agent`` + ``search_url`` |
 # | ``ref`` ``param_offload=True`` | ``param_offload=False`` (single GPU; set True if actor OOM) |
-# | ``ppo_max_token_len`` = 2×(P+R) | ``max_seq_tokens_per_gpu`` = ``VLLM_MAX_MODEL_LEN`` (default 8192) |
+# | ``ppo_max_token_len`` = 2×(P+R) | ``max_seq_tokens_per_gpu`` = ``VLLM_MAX_MODEL_LEN`` (default 10240) |
 # | ``rollout.log_prob`` = 4×(P+R) | same cap via ``max_seq_tokens_per_gpu`` on rollout/ref |
 # | ``trainer.rollout_save_path`` | ``trainer.rollout_data_dir`` |
 # | ``trainer.val_before_train=True`` | ``False`` here — set ``VAL_BEFORE_TRAIN=True`` below to mirror |
@@ -81,7 +81,7 @@ trainer_n_gpus_per_node=1
 trainer_nnodes=1
 # Hydra trainer.project_name / experiment_name → wandb.init(project=, name=). Project defaults from WANDB_PROJECT above.
 trainer_project_name="${WANDB_PROJECT}"
-trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_40gb}"
+trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_80gb}"
 # Checkpoints: ray_trainer only saves when save_freq > 0. -1 disables checkpoint writes (smoke tests).
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
 SAVE_FREQ="${SAVE_FREQ:-1000}"
@@ -109,41 +109,40 @@ fi
 mkdir -p "${RAY_DATA_HOME}/logs/${trainer_project_name}"
 LOG_PATH="${RAY_DATA_HOME}/logs/${trainer_project_name}/${trainer_experiment_name}.log"
 
+# Live Weave: same row payload as rollout JSONL (``pip install weave``). Off: TRAINER_WEAVE_ROLLOUT_LIVE=false
+TRAINER_WEAVE_ROLLOUT_LIVE="${TRAINER_WEAVE_ROLLOUT_LIVE:-false}"
+
 use_dynamic_bsz=True
 
-# Training batch: raise until actor/ref OOM. ``GEN_BATCH_SIZE`` (optional) can exceed this to feed vLLM fatter rollout steps
-# (defaults to ``TRAIN_BATCH_SIZE``). Example: ``TRAIN_BATCH_SIZE=8 GEN_BATCH_SIZE=16`` if rollout stalls on GPU.
+# Training batch: 80GB allows wider batches than 40GB; lower if actor/ref OOM. ``GEN_BATCH_SIZE`` can exceed train batch.
+# ``gen_batch_size × rollout_n`` must divide ``ROLLOUT_AGENT_NUM_WORKERS`` (default ``rollout_n``).
 train_batch_size="${TRAIN_BATCH_SIZE:-8}"
 ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-8}"
-# train_batch_size="${TRAIN_BATCH_SIZE:-16}"
-# ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-16}"
-gen_batch_size="${GEN_BATCH_SIZE:-${train_batch_size}}"
+gen_batch_size="${GEN_BATCH_SIZE:-8}"
 
 # CPU: more dataloader workers → less GPU idle waiting on parquet decode (override ``DATALOADER_NUM_WORKERS``).
 dataloader_num_workers="${DATALOADER_NUM_WORKERS:-8}"
 
-# vLLM: colocated on 40GB — if ~10GiB+ still free, raise ``VLLM_GPU_MEM_UTIL`` / ``VLLM_MAX_NUM_SEQS`` / batched tokens first.
-# OOM on ``update_weights`` → lower mem util before batch size.
+# vLLM: 80GB — higher KV/batch caps than 40GB; OOM on ``update_weights`` → lower ``VLLM_GPU_MEM_UTIL`` before batch size.
 vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.72}"
 
-vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-3072}"
+vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-9216}"
 max_prompt_length="${MAX_PROMPT_LENGTH:-512}"
-max_response_length="${MAX_RESPONSE_LENGTH:-2048}"
+max_response_length="${MAX_RESPONSE_LENGTH:-8192}"
 
-max_token_len_per_gpu="${MAX_TOKEN_LEN_PER_GPU:-5120}"
-max_rollout_logprob_token_len_per_gpu="${MAX_ROLLOUT_LOGPROB_TOKEN_LEN_PER_GPU:-6144}"
-max_ref_logprob_token_len_per_gpu="${MAX_REF_LOGPROB_TOKEN_LEN_PER_GPU:-6144}"
+max_token_len_per_gpu="${MAX_TOKEN_LEN_PER_GPU:-24576}"
+max_rollout_logprob_token_len_per_gpu="${MAX_ROLLOUT_LOGPROB_TOKEN_LEN_PER_GPU:-24576}"
+max_ref_logprob_token_len_per_gpu="${MAX_REF_LOGPROB_TOKEN_LEN_PER_GPU:-24576}"
 
-vllm_max_num_seqs="${VLLM_MAX_NUM_SEQS:-12}"
+vllm_max_num_seqs="${VLLM_MAX_NUM_SEQS:-6}"
 rollout_n="${ROLLOUT_N:-5}"
-rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-16384}"
+rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-14336}"
 # Must divide the per-step prompt batch (typically train_batch_size × rollout_n with GRPO); else DataProto.chunk fails.
 rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-${rollout_n}}"
 
-# Speed vs memory: ``USE_TORCH_COMPILE=True`` can lift actor throughput (test stability). ``GRADIENT_CHECKPOINTING=False`` uses
-# more VRAM but faster backward — only if you still have headroom.
+# Speed vs memory: 80GB often allows ``GRADIENT_CHECKPOINTING=False`` for faster backward; set True if actor OOM.
 use_torch_compile="${USE_TORCH_COMPILE:-True}"
-gradient_checkpointing="${GRADIENT_CHECKPOINTING:-False}"
+gradient_checkpointing="${GRADIENT_CHECKPOINTING:-True}"
 # Must be ≥ largest single weight tensor. Qwen3 embed_tokens is ~622MB float32 (151936×1024).
 # Below that you get AssertionError in bucketed_weight_transfer. Override if you change model.
 update_weights_bucket_megabytes="${UPDATE_WEIGHTS_BUCKET_MEGABYTES:-1024}"
@@ -185,7 +184,6 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.override_config.attn_implementation=sdpa \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
-    actor_rollout_ref.actor.entropy_coeff=0.001 \
     actor_rollout_ref.actor.ppo_mini_batch_size=${ppo_mini_batch_size} \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
@@ -225,6 +223,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.logger="[console, wandb]" \
     trainer.rollout_prompt_log_skip_special_tokens=${ROLLOUT_PROMPT_LOG_SKIP_SPECIAL_TOKENS} \
     trainer.rollout_data_dir=${ROLLOUT_SAVE_PATH} \
+    trainer.weave_rollout_live=${TRAINER_WEAVE_ROLLOUT_LIVE} \
     trainer.default_local_dir=${CKPTS_DIR} \
     trainer.resume_mode=${RESUME_MODE} \
     trainer.n_gpus_per_node=$trainer_n_gpus_per_node \

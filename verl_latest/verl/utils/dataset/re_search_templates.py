@@ -38,6 +38,18 @@ For example, <think> This is the reasoning process. </think> <search> search que
 <think> This is the reasoning process. </think> <answer> The final answer is \\[ \\boxed{answer here} \\] </answer>. \
 In the last part of the answer, the final exact answer is enclosed within \\boxed{} with latex format."""
 
+re_search_template_sys_updated = """You are a helpful assistant who can answer questions using a Wikipedia search tool. \
+You can call the search tool by writing: \
+<search> your query </search> \
+You will receive the result in: \
+<result> your search result </result> \
+Use the search tool when needed to obtain accurate information. Prefer using the tool when you are unsure. \
+For example: \
+Question: What is the capital of France? \
+<search>capital of France</search> \
+<result>The capital of France is Paris.</result> \
+The final answer is \\[ \\boxed{Paris} \\]"""
+
 prompt_template_dict = {}
 prompt_template_dict["re_search_template"] = re_search_template
 prompt_template_dict["re_search_template_sys"] = re_search_template_sys

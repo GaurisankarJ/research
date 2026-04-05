@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GRPO + vLLM — Qwen3-0.6B-Instruct, **4× L4** (~24GB each): conservative vLLM + FSDP + re_search memory profile.
+# GRPO + vLLM — Qwen3-0.6B-Instruct, profile **~40GB** VRAM (A100-40GB class, single GPU colocated FSDP + vLLM + re_search).
 # Tuned vs ``run_qwen3_0.6b_grpo_vllm_instruct.sh`` (L4/smoke): higher vLLM KV budget, batching, GRPO width, train batch.
 # If CUDA OOM: lower ``VLLM_GPU_MEM_UTIL`` (e.g. 0.32) or ``VLLM_MAX_MODEL_LEN`` / ``ROLLOUT_N``. See header in base script.
 # Flags: --add_qwen_chat → +data.re_search_add_qwen_chat=true (manual <|im_start|>…); --add_thinking → +data.re_search_add_thinking=true (\\n only after assistant; default leaves empty <redacted_thinking> block).
@@ -8,13 +8,13 @@
 #
 # --- vs ``scripts/train/train.sh`` (multi-GPU legacy recipe) ---
 # | train.sh | this run (verl_latest) |
-# | 4× GPU, TP=2 rollout | 4× GPU, ``tensor_model_parallel_size=1`` |
-# | ``train_batch_size=256`` (split across GPUs) | ``TRAIN_BATCH_SIZE=16`` (raise env until OOM); optional ``GEN_BATCH_SIZE`` |
+# | 4× GPU, TP=2 rollout | 1× GPU, ``tensor_model_parallel_size=1`` |
+# | ``train_batch_size=256`` (split across GPUs) | ``TRAIN_BATCH_SIZE=1`` (raise env until OOM); optional ``GEN_BATCH_SIZE`` |
 # | ``Qwen3-0.6B-Base`` + ``data.apply_chat`` | Instruct + ``+data.re_search_use_chat_format`` + ``re_search_template_sys`` |
 # | ``reward_model.reward_manager`` | ``reward.reward_manager.name=re_search`` |
 # | ``vllm_with_search`` (name may be absent in verl_latest) | ``rollout.name=vllm`` + ``default_agent_loop=re_search_agent`` + ``search_url`` |
 # | ``ref`` ``param_offload=True`` | ``param_offload=False`` (single GPU; set True if actor OOM) |
-# | ``ppo_max_token_len`` = 2×(P+R) | ``max_seq_tokens_per_gpu`` = ``VLLM_MAX_MODEL_LEN`` (default 8192) |
+# | ``ppo_max_token_len`` = 2×(P+R) | ``max_seq_tokens_per_gpu`` = ``VLLM_MAX_MODEL_LEN`` (default 9216) |
 # | ``rollout.log_prob`` = 4×(P+R) | same cap via ``max_seq_tokens_per_gpu`` on rollout/ref |
 # | ``trainer.rollout_save_path`` | ``trainer.rollout_data_dir`` |
 # | ``trainer.val_before_train=True`` | ``False`` here — set ``VAL_BEFORE_TRAIN=True`` below to mirror |
@@ -64,8 +64,8 @@ else
   REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 fi
 
-# 4 GPUs per node (override CUDA_VISIBLE_DEVICES e.g. 0,1,2,3)
-export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3}"
+# Single GPU (set e.g. CUDA_VISIBLE_DEVICES=0 before launch if multiple GPUs are visible)
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 
 # Hydra: full Python tracebacks (default is abbreviated)
 export HYDRA_FULL_ERROR="${HYDRA_FULL_ERROR:-1}"
@@ -76,12 +76,12 @@ export PYTORCH_ALLOC_CONF="${PYTORCH_ALLOC_CONF:-expandable_segments:True}"
 # vLLM v1 engine (optional; omit if your install does not support it)
 export VLLM_USE_V1="${VLLM_USE_V1:-0}"
 
-# 4 GPU per node
-trainer_n_gpus_per_node=4
+# 1 GPU per node
+trainer_n_gpus_per_node=1
 trainer_nnodes=1
 # Hydra trainer.project_name / experiment_name → wandb.init(project=, name=). Project defaults from WANDB_PROJECT above.
 trainer_project_name="${WANDB_PROJECT}"
-trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_4_24gb}"
+trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_40gb}"
 # Checkpoints: ray_trainer only saves when save_freq > 0. -1 disables checkpoint writes (smoke tests).
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
 SAVE_FREQ="${SAVE_FREQ:-1000}"
@@ -109,33 +109,39 @@ fi
 mkdir -p "${RAY_DATA_HOME}/logs/${trainer_project_name}"
 LOG_PATH="${RAY_DATA_HOME}/logs/${trainer_project_name}/${trainer_experiment_name}.log"
 
+# Live Weave: same row payload as rollout JSONL (``pip install weave``). Off: TRAINER_WEAVE_ROLLOUT_LIVE=false
+TRAINER_WEAVE_ROLLOUT_LIVE="${TRAINER_WEAVE_ROLLOUT_LIVE:-false}"
+
 use_dynamic_bsz=True
 
 # Training batch: raise until actor/ref OOM. ``GEN_BATCH_SIZE`` (optional) can exceed this to feed vLLM fatter rollout steps
 # (defaults to ``TRAIN_BATCH_SIZE``). Example: ``TRAIN_BATCH_SIZE=8 GEN_BATCH_SIZE=16`` if rollout stalls on GPU.
 train_batch_size="${TRAIN_BATCH_SIZE:-4}"
 ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-4}"
+# train_batch_size="${TRAIN_BATCH_SIZE:-16}"
+# ppo_mini_batch_size="${PPO_MINI_BATCH_SIZE:-16}"
 gen_batch_size="${GEN_BATCH_SIZE:-4}"
 
 # CPU: more dataloader workers → less GPU idle waiting on parquet decode (override ``DATALOADER_NUM_WORKERS``).
 dataloader_num_workers="${DATALOADER_NUM_WORKERS:-8}"
 
-# Safer L4 memory profile
-vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.50}"
-vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-2048}"
+# vLLM: colocated on 40GB — if ~10GiB+ still free, raise ``VLLM_GPU_MEM_UTIL`` / ``VLLM_MAX_NUM_SEQS`` / batched tokens first.
+# OOM on ``update_weights`` → lower mem util before batch size.
+vllm_gpu_mem_util="${VLLM_GPU_MEM_UTIL:-0.62}"
 
+vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-9216}"
 max_prompt_length="${MAX_PROMPT_LENGTH:-512}"
-max_response_length="${MAX_RESPONSE_LENGTH:-1024}"
+max_response_length="${MAX_RESPONSE_LENGTH:-8192}"
 
-max_token_len_per_gpu="${MAX_TOKEN_LEN_PER_GPU:-3072}"
-max_rollout_logprob_token_len_per_gpu="${MAX_ROLLOUT_LOGPROB_TOKEN_LEN_PER_GPU:-4096}"
-max_ref_logprob_token_len_per_gpu="${MAX_REF_LOGPROB_TOKEN_LEN_PER_GPU:-4096}"
+max_token_len_per_gpu="${MAX_TOKEN_LEN_PER_GPU:-18432}"
+max_rollout_logprob_token_len_per_gpu="${MAX_ROLLOUT_LOGPROB_TOKEN_LEN_PER_GPU:-18432}"
+max_ref_logprob_token_len_per_gpu="${MAX_REF_LOGPROB_TOKEN_LEN_PER_GPU:-18432}"
 
 vllm_max_num_seqs="${VLLM_MAX_NUM_SEQS:-4}"
 rollout_n="${ROLLOUT_N:-5}"
-rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-8192}"
+rollout_max_num_batched_tokens="${ROLLOUT_MAX_NUM_BATCHED_TOKENS:-12288}"
 # Must divide the per-step prompt batch (typically train_batch_size × rollout_n with GRPO); else DataProto.chunk fails.
-rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-4}"
+rollout_agent_num_workers="${ROLLOUT_AGENT_NUM_WORKERS:-${rollout_n}}"
 
 # Speed vs memory: ``USE_TORCH_COMPILE=True`` can lift actor throughput (test stability). ``GRADIENT_CHECKPOINTING=False`` uses
 # more VRAM but faster backward — only if you still have headroom.
@@ -149,8 +155,7 @@ update_weights_bucket_megabytes="${UPDATE_WEIGHTS_BUCKET_MEGABYTES:-1024}"
 # The agent POSTs JSON ``{"query":[...],"top_n":n}`` to ``{base}/batch_search`` and expects the JSON shape in
 # ``re_search_agent_loop._batch_search_http``. Default port matches a typical local wiki/search server; override
 # host/port to your service, or set ``SEARCH_URL=`` for empty URL → ``single_turn_agent`` (no HTTP during rollout).
-# SEARCH_URL="${SEARCH_URL:-http://127.0.0.1:3005}"
-SEARCH_URL="${SEARCH_URL:-http://node866:3005}"
+SEARCH_URL="${SEARCH_URL:-http://127.0.0.1:3005}"
 ROLLOUT_AGENT="${ROLLOUT_AGENT:-single_turn_agent}"
 if [ -n "${SEARCH_URL}" ]; then
   ROLLOUT_AGENT=re_search_agent
@@ -183,7 +188,6 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.model.override_config.attn_implementation=sdpa \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
-    actor_rollout_ref.actor.entropy_coeff=0.001 \
     actor_rollout_ref.actor.ppo_mini_batch_size=${ppo_mini_batch_size} \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.001 \
@@ -194,7 +198,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.enable_gradient_checkpointing=${gradient_checkpointing} \
     actor_rollout_ref.actor.fsdp_config.param_offload=False \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=False \
-    actor_rollout_ref.rollout.enforce_eager=True \
+    actor_rollout_ref.rollout.enforce_eager=False \
     actor_rollout_ref.rollout.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
     actor_rollout_ref.rollout.agent.num_workers=${rollout_agent_num_workers} \
     actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=${max_rollout_logprob_token_len_per_gpu} \
@@ -223,6 +227,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.logger="[console, wandb]" \
     trainer.rollout_prompt_log_skip_special_tokens=${ROLLOUT_PROMPT_LOG_SKIP_SPECIAL_TOKENS} \
     trainer.rollout_data_dir=${ROLLOUT_SAVE_PATH} \
+    trainer.weave_rollout_live=${TRAINER_WEAVE_ROLLOUT_LIVE} \
     trainer.default_local_dir=${CKPTS_DIR} \
     trainer.resume_mode=${RESUME_MODE} \
     trainer.n_gpus_per_node=$trainer_n_gpus_per_node \
