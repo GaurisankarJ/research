@@ -307,12 +307,13 @@ class ReSearchAgentLoop(AgentLoopBase):
                     break
 
                 queries = [extract_search_content(seg_text)]
-                results = await self.loop.run_in_executor(
-                    None,
-                    lambda q=queries: _batch_search_http(
-                        self.search_url, q, self.search_top_n, self.search_http_timeout_s
-                    ),
-                )
+                with simple_timer("tool_calls", timing):
+                    results = await self.loop.run_in_executor(
+                        None,
+                        lambda q=queries: _batch_search_http(
+                            self.search_url, q, self.search_top_n, self.search_http_timeout_s
+                        ),
+                    )
                 result_text = results[0] if results else ""
                 result_suffix = f" <result>\n{result_text}\n</result>"
                 result_ids = self.tokenizer.encode(result_suffix, add_special_tokens=False)
@@ -374,6 +375,7 @@ class ReSearchAgentLoop(AgentLoopBase):
 
         metrics = AgentLoopMetrics(
             generate_sequences=float(timing.get("generate_sequences", 0.0)),
+            tool_calls=float(timing.get("tool_calls", 0.0)),
             num_preempted=num_preempted,
         )
 

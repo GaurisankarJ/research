@@ -32,10 +32,10 @@ srun \
 
 srun \
   --partition=gpu-mig-40g \
-  --gres=gpu:4g.40gb:1 \
+  --gres=gpu:1 \
   --cpus-per-task=8 \
-  --mem=240g \
-  --time=02:00:00 \
+  --mem=120g \
+  --time=168:00:00 \
   --pty bash
 
 srun \
@@ -50,7 +50,7 @@ srun \
   --partition=gpu-a100-80g \
   --gres=gpu:a100:2 \
   --cpus-per-task=16 \
-  --mem=120g \
+  --mem=240g \
   --time=168:00:00 \
   --pty bash
 ```
@@ -58,6 +58,8 @@ srun \
 ## Slurm
 
 ```bash
+squeue --start -j 1380919,1380950
+
 sinfo
 
 squeue -u $USER

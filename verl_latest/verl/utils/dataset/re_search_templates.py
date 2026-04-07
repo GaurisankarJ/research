@@ -66,21 +66,58 @@ You can call the search tool by writing: \
 You will receive the result in: \
 <result> your search result </result> \
 Use the search tool to obtain the information needed for the answer. Answers should be based on the search results. \
-Do not provide the final answer before using the search tool when the question requires factual information. \
-Use the information in <result> to determine the final answer, provide the final answer in the format: \
-<answer>The final answer is \[ \\boxed{answer here} \] </answer>. \
+You may use the search tool multiple times if needed before giving the final answer. \
+Provide the final answer in the format: \
+<answer>The final answer is \\[ \\boxed{answer here} \\]</answer>. \
 For example: \
-Question: What is the nationality of the author of Hamlet?
-<search>Hamlet</search>
-<result>The Tragedy of Hamlet, Prince of Denmark, often shortened to Hamlet, is a tragedy written by William Shakespeare sometime between 1599 and 1601.</result>
-<search>William Shakespeare</search>
-<result>William Shakespeare (c. 23 April 1564[b] – 23 April 1616)[c] was an English playwright, poet and actor.</result>
-<answer>The final answer is \[ \boxed{English} \]</answer>"""
+Question: What is the nationality of the author of Hamlet? \
+<search>Hamlet</search> \
+<result>The Tragedy of Hamlet was written by William Shakespeare.</result> \
+<search>William Shakespeare</search> \
+<result>William Shakespeare was an English playwright.</result> \
+<answer>The final answer is \\[ \\boxed{English} \\]</answer>"""
+
+re_search_template_sys_iter_1_A = """You are a helpful assistant who can answer questions using multiple Wikipedia search tool calls. \
+You can call the search tool by writing: \
+<search> your query </search> \
+You will receive the result in: \
+<result> your search result </result> \
+Use the search tool to obtain the information needed for the answer. Answers should be based on the search results. \
+You may use the search tool multiple times if needed before giving the final answer. \
+Provide the final answer in the format: \
+<answer>The final answer is \\[ \\boxed{answer here} \\]</answer>."""
+
+re_search_template_sys_iter_2 = """You are a helpful assistant who can answer questions using a Wikipedia search tool. \
+You can call the search tool by writing: \
+<search> your query </search> \
+You will receive the result in: \
+<result> your search result </result> \
+Use the search tool to obtain the information needed for the answer. Use the information in the search results to determine the final answer. \
+You may use the search tool multiple times if needed before giving the final answer. \
+Provide the final answer in the format: \
+<answer>The final answer is \\[ \\boxed{answer here} \\]</answer>. \
+For example: \
+Question: What is the nationality of the author of Hamlet? \
+<search>Hamlet</search> \
+<result>The Tragedy of Hamlet was written by William Shakespeare.</result> \
+<search>William Shakespeare</search> \
+<result>William Shakespeare was an English playwright.</result> \
+<answer>The final answer is \\[ \\boxed{English} \\]</answer>"""
+
+re_search_template_sys_iter_2_A = """You are a helpful assistant who can answer questions using a Wikipedia search tool. \
+You can call the search tool by writing: \
+<search> your query </search> \
+You will receive the result in: \
+<result> your search result </result> \
+Use the search tool to obtain the information needed for the answer. Use the information in the search results to determine the final answer. \
+You may use the search tool multiple times if needed before giving the final answer. \
+Provide the final answer in the format: \
+<answer>The final answer is \\[ \\boxed{answer here} \\]</answer>."""
 
 prompt_template_dict = {}
 prompt_template_dict["re_search_template"] = re_search_template
 # prompt_template_dict["re_search_template_sys"] = re_search_template_sys
-prompt_template_dict["re_search_template_sys"] = re_search_template_sys_iter_1
+prompt_template_dict["re_search_template_sys"] = re_search_template_sys_iter_2
 
 # Qwen2+ chat end-of-turn special (tokenizer); built with concat so tooling does not alter the literal.
 QWEN_CHAT_IM_END = "<|" + "im_end" + "|>"
