@@ -768,3 +768,326 @@
 2026-03-30 14:10:50 - INFO - llm_judge.py - run_judge - Response: ''
 2026-03-30 14:10:50 - INFO - utils.py - wrapper - [retry] try 4 times
 2026-03-30 14:10:50 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - input_dir: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - model_name: qwen3.5:9b
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - base_url: http://127.0.0.1:11434
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - api_key: ollama
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - log_path: ./llm_judge.log
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - max_workers: 2
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - request_timeout: 600.0
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - output_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base/llm_judge.jsonl
+2026-04-08 21:48:22 - INFO - llm_judge.py - <module> - metric_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base/llm_judge_metric.txt
+2026-04-08 21:48:22 - INFO - llm_judge.py - run - OpenAI client base_url (resolved): http://127.0.0.1:11434/v1
+2026-04-08 21:48:22 - INFO - llm_judge.py - run - Read 125 lines from /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - input_dir: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - model_name: qwen3.5:9b
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - base_url: http://127.0.0.1:11434
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - api_key: ollama
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - log_path: ./llm_judge.log
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - max_workers: 2
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - request_timeout: 600.0
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - output_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base/llm_judge.jsonl
+2026-04-08 21:49:32 - INFO - llm_judge.py - <module> - metric_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base/llm_judge_metric.txt
+2026-04-08 21:49:32 - INFO - llm_judge.py - run - OpenAI client base_url (resolved): http://127.0.0.1:11434/v1
+2026-04-08 21:49:32 - INFO - llm_judge.py - run - Read 125 lines from /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base
+2026-04-08 21:50:45 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:50:45 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:50:45 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:51:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:51:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:51:08 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 21:51:31 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:51:31 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:51:31 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 21:51:53 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:51:53 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:51:53 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 21:52:17 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:52:17 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:52:17 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 21:52:17 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-04-08 21:52:43 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:52:43 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:52:43 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:53:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:53:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:53:08 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 21:53:23 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:53:23 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:53:23 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:53:38 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:53:38 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:53:38 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 21:53:53 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:53:53 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:53:53 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 21:54:08 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:54:08 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:54:08 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 21:54:22 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:54:22 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:54:22 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 21:54:37 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:54:37 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:54:37 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 21:54:37 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-04-08 21:54:52 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:54:52 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:54:52 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 21:55:19 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:55:19 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:55:19 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 21:55:19 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-04-08 21:55:42 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-04-08 21:55:42 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The question asks for a Theranos whistleblower who is not related to a senior American government official. The ground truth answer provided is \'Erika Cheung\'. The prediction is \'Dr. Elizabeth Holmes\'. Elizabeth Holmes was the CEO and founder of Theranos, not a whistleblower. Erika Cheung was'
+2026-04-08 21:55:42 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:56:04 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-04-08 21:56:04 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The question asks for a Theranos whistleblower who is not related to a senior American government official. The ground truth answer provided is \'Erika Cheung\'. The prediction is \'Dr. Elizabeth Holmes\'. Elizabeth Holmes was the CEO and founder of Theranos, not a whistleblower. Erika Cheung was'
+2026-04-08 21:56:04 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 21:56:34 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-04-08 21:56:34 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The question asks for a Theranos whistleblower who is not related to a senior American government official. The ground truth answer provided is \'Erika Cheung\'. The prediction is \'Dr. Elizabeth Holmes\'. Elizabeth Holmes was the CEO and founder of Theranos, not a whistleblower. Erika Cheung was'
+2026-04-08 21:56:34 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 21:56:58 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-04-08 21:56:58 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The question asks for a Theranos whistleblower who is not related to a senior American government official. The ground truth answer provided is \'Erika Cheung\'. The prediction is \'Dr. Elizabeth Holmes\'. Elizabeth Holmes was the CEO and founder of Theranos, not a whistleblower. Erika Cheung was'
+2026-04-08 21:56:58 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 21:57:13 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:57:13 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:57:13 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:57:28 - INFO - llm_judge.py - run_judge - Error parsing response: Unterminated string starting at: line 2 column 18 (char 19)
+2026-04-08 21:57:28 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationale": "The question asks for a Theranos whistleblower who is not related to a senior American government official. The ground truth answer provided is \'Erika Cheung\'. The prediction is \'Dr. Elizabeth Holmes\'. Elizabeth Holmes was the CEO and founder of Theranos, not a whistleblower. Erika Cheung was'
+2026-04-08 21:57:28 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 21:57:28 - INFO - utils.py - execute - [error] Error: Unterminated string starting at: line 2 column 18 (char 19). Retry run_judge failed after 5 times
+2026-04-08 21:57:43 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:57:43 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:57:43 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 21:58:10 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:58:10 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:58:10 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 21:58:25 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:58:25 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:58:25 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:58:40 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:58:40 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:58:40 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 21:58:54 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:58:54 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:58:54 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 21:59:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:59:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:59:09 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 21:59:09 - INFO - utils.py - execute - [error] Error: empty model content. Retry run_judge failed after 5 times
+2026-04-08 21:59:24 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:59:24 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:59:24 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 21:59:39 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:59:39 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:59:39 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 21:59:54 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 21:59:54 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 21:59:54 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:00:09 - INFO - llm_judge.py - run_judge - Error parsing response: empty model content
+2026-04-08 22:00:09 - INFO - llm_judge.py - run_judge - Response: ''
+2026-04-08 22:00:09 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - input_dir: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - model_name: qwen3.5:9b
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - base_url: http://127.0.0.1:11434
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - api_key: ollama
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - log_path: ./llm_judge.log
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - max_workers: 2
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - request_timeout: 600.0
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - output_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base/llm_judge.jsonl
+2026-04-08 22:00:23 - INFO - llm_judge.py - <module> - metric_path: /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base/llm_judge_metric.txt
+2026-04-08 22:00:23 - INFO - llm_judge.py - run - OpenAI client base_url (resolved): http://127.0.0.1:11434/v1
+2026-04-08 22:00:23 - INFO - llm_judge.py - run - Read 125 lines from /zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_08_21_08_research_qwen3_reasoning_base
+2026-04-08 22:01:29 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:29 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the philosopher who formulated the \'hard problem of consciousness\'. This philosopher is David Chalmers. According to the ground truth answers provided, the correct birth date is \'April 20, 1966\'. The predicted answer is \'1924\', which is a year and does not match the ground truth date either in format or value. Therefore, the prediction is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:29 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:01:33 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:33 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the philosopher who formulated the \'hard problem of consciousness\'. This philosopher is David Chalmers. According to the ground truth answers provided, the correct birth date is \'April 20, 1966\'. The predicted answer is \'1924\', which is a year and does not match the ground truth date either in format or value. Therefore, the prediction is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:33 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:01:37 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:37 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the philosopher who formulated the \'hard problem of consciousness\'. This philosopher is David Chalmers. According to the ground truth answers provided, the correct birth date is \'April 20, 1966\'. The predicted answer is \'1924\', which is a year and does not match the ground truth date either in format or value. Therefore, the prediction is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:37 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:01:40 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:40 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the philosopher who formulated the \'hard problem of consciousness\'. This philosopher is David Chalmers. According to the ground truth answers provided, the correct birth date is \'April 20, 1966\'. The predicted answer is \'1924\', which is a year and does not match the ground truth date either in format or value. Therefore, the prediction is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:40 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:01:45 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:45 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the philosopher who formulated the \'hard problem of consciousness\'. This philosopher is David Chalmers. According to the ground truth answers provided, the correct birth date is \'April 20, 1966\'. The predicted answer is \'1924\', which is a year and does not match the ground truth date either in format or value. Therefore, the prediction is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:45 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:01:45 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:01:54 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:54 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates that four boiled egg yolks contain 10.8 units (likely grams) of protein. The predicted answer is 2.8, which is significantly different from 10.8. Since the predicted answer does not match the ground truth semantically or numerically, it is considered incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:54 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:01:57 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:01:57 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates that four boiled egg yolks contain 10.8 units (likely grams) of protein. The predicted answer is 2.8, which is significantly different from 10.8. Since the predicted answer does not match the ground truth semantically or numerically, it is considered incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:01:57 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:02:01 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:01 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates that four boiled egg yolks contain 10.8 units (likely grams) of protein. The predicted answer is 2.8, which is significantly different from 10.8. Since the predicted answer does not match the ground truth semantically or numerically, it is considered incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:01 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:02:04 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:04 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates that four boiled egg yolks contain 10.8 units (likely grams) of protein. The predicted answer is 2.8, which is significantly different from 10.8. Since the predicted answer does not match the ground truth semantically or numerically, it is considered incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:04 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:02:07 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:07 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates that four boiled egg yolks contain 10.8 units (likely grams) of protein. The predicted answer is 2.8, which is significantly different from 10.8. Since the predicted answer does not match the ground truth semantically or numerically, it is considered incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:07 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:02:07 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:02:24 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:24 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer states that the person Russ Hanneman is based on was born on July 31, 1958. The predicted answer is 1949. Since 1949 is not the same date as 1958 and represents a different year, the predicted answer is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:24 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:02:27 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:27 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer states that the person Russ Hanneman is based on was born on July 31, 1958. The predicted answer is 1949. Since 1949 is not the same date as 1958 and represents a different year, the predicted answer is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:27 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:02:29 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:29 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'James Cameroon\' (likely a typo for James Cameron) as the director of the highest-grossing film. The predicted answer is \'Christopher Nolan\'. Since James Cameron and Christopher Nolan are two different individuals, the predicted answer does not match the ground truth semantically. Therefore, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:29 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:02:31 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:31 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer states that the person Russ Hanneman is based on was born on July 31, 1958. The predicted answer is 1949. Since 1949 is not the same date as 1958 and represents a different year, the predicted answer is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:31 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:02:32 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:32 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'James Cameroon\' (likely a typo for James Cameron) as the director of the highest-grossing film. The predicted answer is \'Christopher Nolan\'. Since James Cameron and Christopher Nolan are two different individuals, the predicted answer does not match the ground truth semantically. Therefore, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:32 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:02:34 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:34 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer states that the person Russ Hanneman is based on was born on July 31, 1958. The predicted answer is 1949. Since 1949 is not the same date as 1958 and represents a different year, the predicted answer is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:34 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:02:35 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:35 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'James Cameroon\' (likely a typo for James Cameron) as the director of the highest-grossing film. The predicted answer is \'Christopher Nolan\'. Since James Cameron and Christopher Nolan are two different individuals, the predicted answer does not match the ground truth semantically. Therefore, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:35 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:02:37 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:37 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer states that the person Russ Hanneman is based on was born on July 31, 1958. The predicted answer is 1949. Since 1949 is not the same date as 1958 and represents a different year, the predicted answer is factually incorrect based on the provided ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:37 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:02:37 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:02:39 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:39 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'James Cameroon\' (likely a typo for James Cameron) as the director of the highest-grossing film. The predicted answer is \'Christopher Nolan\'. Since James Cameron and Christopher Nolan are two different individuals, the predicted answer does not match the ground truth semantically. Therefore, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:39 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:02:43 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:43 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'James Cameroon\' (likely a typo for James Cameron) as the director of the highest-grossing film. The predicted answer is \'Christopher Nolan\'. Since James Cameron and Christopher Nolan are two different individuals, the predicted answer does not match the ground truth semantically. Therefore, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:43 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:02:43 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:02:46 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:46 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer explicitly states the year 2012. The predicted answer is 2013. Since 2012 and 2013 are different years and do not share the same semantic meaning in this context, the predicted answer does not match the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:46 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:02:47 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:47 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer is \'1988\', which refers to the completion year of the CN Tower, the tallest fixed steel structure in the world. The provided pred_answer is empty. Since the prediction contains no information and does not match the semantic meaning of the ground truth answer \'1988\', it is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:47 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:02:49 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:49 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer explicitly states the year 2012. The predicted answer is 2013. Since 2012 and 2013 are different years and do not share the same semantic meaning in this context, the predicted answer does not match the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:49 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:02:51 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:51 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer is \'1988\', which refers to the completion year of the CN Tower, the tallest fixed steel structure in the world. The provided pred_answer is empty. Since the prediction contains no information and does not match the semantic meaning of the ground truth answer \'1988\', it is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:51 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:02:52 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:52 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer explicitly states the year 2012. The predicted answer is 2013. Since 2012 and 2013 are different years and do not share the same semantic meaning in this context, the predicted answer does not match the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:52 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:02:54 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:54 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer is \'1988\', which refers to the completion year of the CN Tower, the tallest fixed steel structure in the world. The provided pred_answer is empty. Since the prediction contains no information and does not match the semantic meaning of the ground truth answer \'1988\', it is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:54 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:02:55 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:55 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer explicitly states the year 2012. The predicted answer is 2013. Since 2012 and 2013 are different years and do not share the same semantic meaning in this context, the predicted answer does not match the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:55 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:02:57 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:57 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer is \'1988\', which refers to the completion year of the CN Tower, the tallest fixed steel structure in the world. The provided pred_answer is empty. Since the prediction contains no information and does not match the semantic meaning of the ground truth answer \'1988\', it is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:57 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:02:58 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:02:58 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer explicitly states the year 2012. The predicted answer is 2013. Since 2012 and 2013 are different years and do not share the same semantic meaning in this context, the predicted answer does not match the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:02:58 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:02:58 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:03:00 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:00 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer is \'1988\', which refers to the completion year of the CN Tower, the tallest fixed steel structure in the world. The provided pred_answer is empty. Since the prediction contains no information and does not match the semantic meaning of the ground truth answer \'1988\', it is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:00 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:03:00 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:03:01 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:01 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates the year is 2012. The predicted answer is 1997. Since 1997 is not semantically equivalent to 2012 and does not match any item in the ground truth list, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:01 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:03:04 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:04 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates the year is 2012. The predicted answer is 1997. Since 1997 is not semantically equivalent to 2012 and does not match any item in the ground truth list, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:04 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:03:09 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:09 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates the year is 2012. The predicted answer is 1997. Since 1997 is not semantically equivalent to 2012 and does not match any item in the ground truth list, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:09 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:03:12 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:12 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates the year is 2012. The predicted answer is 1997. Since 1997 is not semantically equivalent to 2012 and does not match any item in the ground truth list, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:12 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:03:15 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:15 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer indicates the year is 2012. The predicted answer is 1997. Since 1997 is not semantically equivalent to 2012 and does not match any item in the ground truth list, the prediction is incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:15 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:03:15 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:03:52 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:52 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'MECC\' (Micro Electronic Computer Corporation) as the producer of the longest-running video game franchise (referring to the Oregon Trail series). The predicted answer is \'FromSoftware\', which is known for franchises like Dark Souls and Elden Ring. These are completely different entities and franchises. Therefore, the predicted answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:52 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:03:56 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:03:56 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'MECC\' (Micro Electronic Computer Corporation) as the producer of the longest-running video game franchise (referring to the Oregon Trail series). The predicted answer is \'FromSoftware\', which is known for franchises like Dark Souls and Elden Ring. These are completely different entities and franchises. Therefore, the predicted answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:03:56 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:04:00 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:00 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'MECC\' (Micro Electronic Computer Corporation) as the producer of the longest-running video game franchise (referring to the Oregon Trail series). The predicted answer is \'FromSoftware\', which is known for franchises like Dark Souls and Elden Ring. These are completely different entities and franchises. Therefore, the predicted answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:00 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:04:03 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:03 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'MECC\' (Micro Electronic Computer Corporation) as the producer of the longest-running video game franchise (referring to the Oregon Trail series). The predicted answer is \'FromSoftware\', which is known for franchises like Dark Souls and Elden Ring. These are completely different entities and franchises. Therefore, the predicted answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:03 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:04:06 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:06 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The ground truth answer identifies \'MECC\' (Micro Electronic Computer Corporation) as the producer of the longest-running video game franchise (referring to the Oregon Trail series). The predicted answer is \'FromSoftware\', which is known for franchises like Dark Souls and Elden Ring. These are completely different entities and franchises. Therefore, the predicted answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:06 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:04:06 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:04:27 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:27 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the father of the father of information theory. The father of information theory is Claude Shannon. Therefore, the question is asking for Claude Shannon\'s father. The ground truth answer is \'Claude Sr.\', which implies Claude Shannon\'s father (often referred to as Claude Elwood Shannon Sr.). The pred_answer is \'Shannon\', which refers to Claude Shannon himself, not his father. Thus, the pred_answer is semantically incorrect as it identifies the son rather than the father.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:27 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:04:36 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:36 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the father of the father of information theory. The father of information theory is Claude Shannon. Therefore, the question is asking for Claude Shannon\'s father. The ground truth answer is \'Claude Sr.\', which implies Claude Shannon\'s father (often referred to as Claude Elwood Shannon Sr.). The pred_answer is \'Shannon\', which refers to Claude Shannon himself, not his father. Thus, the pred_answer is semantically incorrect as it identifies the son rather than the father.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:36 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:04:40 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:40 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the father of the father of information theory. The father of information theory is Claude Shannon. Therefore, the question is asking for Claude Shannon\'s father. The ground truth answer is \'Claude Sr.\', which implies Claude Shannon\'s father (often referred to as Claude Elwood Shannon Sr.). The pred_answer is \'Shannon\', which refers to Claude Shannon himself, not his father. Thus, the pred_answer is semantically incorrect as it identifies the son rather than the father.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:40 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:04:44 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:44 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the father of the father of information theory. The father of information theory is Claude Shannon. Therefore, the question is asking for Claude Shannon\'s father. The ground truth answer is \'Claude Sr.\', which implies Claude Shannon\'s father (often referred to as Claude Elwood Shannon Sr.). The pred_answer is \'Shannon\', which refers to Claude Shannon himself, not his father. Thus, the pred_answer is semantically incorrect as it identifies the son rather than the father.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:44 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:04:48 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:04:48 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the father of the father of information theory. The father of information theory is Claude Shannon. Therefore, the question is asking for Claude Shannon\'s father. The ground truth answer is \'Claude Sr.\', which implies Claude Shannon\'s father (often referred to as Claude Elwood Shannon Sr.). The pred_answer is \'Shannon\', which refers to Claude Shannon himself, not his father. Thus, the pred_answer is semantically incorrect as it identifies the son rather than the father.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:04:48 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:04:48 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:05:08 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:08 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the College of William & Mary is located. The College of William & Mary is located in the state of Virginia. The capital of Virginia is Richmond. The ground truth answer is \'Richmond\', and the predicted answer is also \'Richmond\'. Since the predicted answer is semantically identical to the ground truth answer, it is correct.",\n    "judgement": "correct"\n}'
+2026-04-08 22:05:08 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:05:13 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:13 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the College of William & Mary is located. The College of William & Mary is located in the state of Virginia. The capital of Virginia is Richmond. The ground truth answer is \'Richmond\', and the predicted answer is also \'Richmond\'. Since the predicted answer is semantically identical to the ground truth answer, it is correct.",\n    "judgement": "correct"\n}'
+2026-04-08 22:05:13 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:05:17 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:17 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the College of William & Mary is located. The College of William & Mary is located in the state of Virginia. The capital of Virginia is Richmond. The ground truth answer is \'Richmond\', and the predicted answer is also \'Richmond\'. Since the predicted answer is semantically identical to the ground truth answer, it is correct.",\n    "judgement": "correct"\n}'
+2026-04-08 22:05:17 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:05:19 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:19 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the Space Needle is located. The Space Needle is located in Seattle, which is in the state of Washington. The capital of Washington is Olympia. The ground truth answer is \'Olympia\'. The predicted answer is \'Sacramento\', which is the capital of California, not Washington. Therefore, the predicted answer is semantically different from the ground truth and factually incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:19 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:05:21 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:21 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the College of William & Mary is located. The College of William & Mary is located in the state of Virginia. The capital of Virginia is Richmond. The ground truth answer is \'Richmond\', and the predicted answer is also \'Richmond\'. Since the predicted answer is semantically identical to the ground truth answer, it is correct.",\n    "judgement": "correct"\n}'
+2026-04-08 22:05:21 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:05:22 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:22 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the Space Needle is located. The Space Needle is located in Seattle, which is in the state of Washington. The capital of Washington is Olympia. The ground truth answer is \'Olympia\'. The predicted answer is \'Sacramento\', which is the capital of California, not Washington. Therefore, the predicted answer is semantically different from the ground truth and factually incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:22 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:05:24 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:24 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the College of William & Mary is located. The College of William & Mary is located in the state of Virginia. The capital of Virginia is Richmond. The ground truth answer is \'Richmond\', and the predicted answer is also \'Richmond\'. Since the predicted answer is semantically identical to the ground truth answer, it is correct.",\n    "judgement": "correct"\n}'
+2026-04-08 22:05:24 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:05:24 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:05:26 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:26 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the Space Needle is located. The Space Needle is located in Seattle, which is in the state of Washington. The capital of Washington is Olympia. The ground truth answer is \'Olympia\'. The predicted answer is \'Sacramento\', which is the capital of California, not Washington. Therefore, the predicted answer is semantically different from the ground truth and factually incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:26 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:05:30 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:30 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the Space Needle is located. The Space Needle is located in Seattle, which is in the state of Washington. The capital of Washington is Olympia. The ground truth answer is \'Olympia\'. The predicted answer is \'Sacramento\', which is the capital of California, not Washington. Therefore, the predicted answer is semantically different from the ground truth and factually incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:30 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:05:34 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:34 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the capital of the state where the Space Needle is located. The Space Needle is located in Seattle, which is in the state of Washington. The capital of Washington is Olympia. The ground truth answer is \'Olympia\'. The predicted answer is \'Sacramento\', which is the capital of California, not Washington. Therefore, the predicted answer is semantically different from the ground truth and factually incorrect.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:34 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:05:34 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times
+2026-04-08 22:05:46 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:46 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the composer of \'Carol of the Bells\'. The ground truth answer is \'December 13, 1877\', which refers to Mykola Leontovych (or sometimes associated with the later arrangement by Mykola Dmytrovych, though the melody is Leontovych\'s). The predicted answer is \'1914\', which is a year and does not match the date provided in the ground truth. Furthermore, 1914 is not the birth year of the composer of this piece. Therefore, the pred_answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:46 - INFO - utils.py - wrapper - [retry] try 0 times
+2026-04-08 22:05:51 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:51 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the composer of \'Carol of the Bells\'. The ground truth answer is \'December 13, 1877\', which refers to Mykola Leontovych (or sometimes associated with the later arrangement by Mykola Dmytrovych, though the melody is Leontovych\'s). The predicted answer is \'1914\', which is a year and does not match the date provided in the ground truth. Furthermore, 1914 is not the birth year of the composer of this piece. Therefore, the pred_answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:51 - INFO - utils.py - wrapper - [retry] try 1 times
+2026-04-08 22:05:56 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:05:56 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the composer of \'Carol of the Bells\'. The ground truth answer is \'December 13, 1877\', which refers to Mykola Leontovych (or sometimes associated with the later arrangement by Mykola Dmytrovych, though the melody is Leontovych\'s). The predicted answer is \'1914\', which is a year and does not match the date provided in the ground truth. Furthermore, 1914 is not the birth year of the composer of this piece. Therefore, the pred_answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:05:56 - INFO - utils.py - wrapper - [retry] try 2 times
+2026-04-08 22:06:00 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:06:00 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the composer of \'Carol of the Bells\'. The ground truth answer is \'December 13, 1877\', which refers to Mykola Leontovych (or sometimes associated with the later arrangement by Mykola Dmytrovych, though the melody is Leontovych\'s). The predicted answer is \'1914\', which is a year and does not match the date provided in the ground truth. Furthermore, 1914 is not the birth year of the composer of this piece. Therefore, the pred_answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:06:00 - INFO - utils.py - wrapper - [retry] try 3 times
+2026-04-08 22:06:05 - INFO - llm_judge.py - run_judge - Error parsing response: 
+2026-04-08 22:06:05 - INFO - llm_judge.py - run_judge - Response: '{\n    "rationile": "The question asks for the birth date of the composer of \'Carol of the Bells\'. The ground truth answer is \'December 13, 1877\', which refers to Mykola Leontovych (or sometimes associated with the later arrangement by Mykola Dmytrovych, though the melody is Leontovych\'s). The predicted answer is \'1914\', which is a year and does not match the date provided in the ground truth. Furthermore, 1914 is not the birth year of the composer of this piece. Therefore, the pred_answer is semantically different from the ground truth.",\n    "judgement": "incorrect"\n}'
+2026-04-08 22:06:05 - INFO - utils.py - wrapper - [retry] try 4 times
+2026-04-08 22:06:05 - INFO - utils.py - execute - [error] Error: . Retry run_judge failed after 5 times

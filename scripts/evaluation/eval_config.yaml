@@ -9,7 +9,7 @@ seed: 2024
 
 # Whether save intermediate data
 save_intermediate_data: True
-save_note: 'experiment'
+save_note: 'experiment_base_bamboogle'
 
 # -------------------------------------------------Retrieval Settings------------------------------------------------#
 # If set the remote url, the retriever will be a remote retriever and ignore following settings

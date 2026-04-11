@@ -119,6 +119,7 @@ def run(args):
             temperature=0,
             max_tokens=1024,
             timeout=args.request_timeout,
+            reasoning_effort="none",  
         )
 
         content = response.choices[0].message.content

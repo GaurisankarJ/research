@@ -54,8 +54,12 @@ if [ -f "${SCRIPT_DIR}/.env" ]; then
 fi
 WANDB_API_KEY=${WANDB_API_KEY:-None}
 # W&B team + project (verl Tracking uses trainer.project_name → wandb.init(project=...); entity from env).
-export WANDB_ENTITY="${WANDB_ENTITY:-}"
-WANDB_PROJECT="${WANDB_PROJECT:-verl_grpo_example_musique}"
+export WANDB_ENTITY="${WANDB_ENTITY:-gaurisankarj1996-leiden-university}"
+WANDB_PROJECT="${WANDB_PROJECT:-research}"
+# Optional checkpoint artifact upload to W&B (off by default): each saved global_step_* folder is logged.
+export WANDB_UPLOAD_CHECKPOINTS="${WANDB_UPLOAD_CHECKPOINTS:-true}"
+# Optional override for artifact name when WANDB_UPLOAD_CHECKPOINTS=true.
+export WANDB_CHECKPOINT_ARTIFACT_NAME="${WANDB_CHECKPOINT_ARTIFACT_NAME:-qwen3_0.6b}"
 
 # Repo checkout root (models/, data/musique/ — same layout as scripts/train/train.sh)
 if REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
@@ -81,24 +85,32 @@ trainer_n_gpus_per_node=1
 trainer_nnodes=1
 # Hydra trainer.project_name / experiment_name → wandb.init(project=, name=). Project defaults from WANDB_PROJECT above.
 trainer_project_name="${WANDB_PROJECT}"
-trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_40gb}"
+run_timestamp="$(date +%Y%m%d_%H%M%S)"
+# Append timestamp to experiment/checkpoint run dir by default so each launch gets a unique save path.
+# Set ADD_TIMESTAMP_TO_EXPERIMENT_NAME=false to keep an explicit fixed run name (useful for resume_mode=auto).
+add_timestamp_to_experiment_name="${ADD_TIMESTAMP_TO_EXPERIMENT_NAME:-true}"
+trainer_experiment_base_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_40gb}"
+if [ "${add_timestamp_to_experiment_name}" = "true" ]; then
+  trainer_experiment_name="${trainer_experiment_base_name}_${run_timestamp}"
+else
+  trainer_experiment_name="${trainer_experiment_base_name}"
+fi
 # Checkpoints: ray_trainer only saves when save_freq > 0. -1 disables checkpoint writes (smoke tests).
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
-SAVE_FREQ="${SAVE_FREQ:-1000}"
+SAVE_FREQ="${SAVE_FREQ:-500}"
 # Hydra default resume_mode=auto reloads latest global_step_* under CKPTS_DIR. Use RESUME_MODE=auto to resume.
 RESUME_MODE="${RESUME_MODE:-disable}"
 
 RAY_DATA_HOME=${RAY_DATA_HOME:-"${HOME}/verl"}
 # Match train_instruct.sh intent; override if your checkpoint lives under models/Qwen3-0.6B only.
 MODEL_PATH=${MODEL_PATH:-"${REPO_ROOT}/models/Qwen3-0.6B"}
-CKPTS_DIR=${CKPTS_DIR:-"${RAY_DATA_HOME}/ckpts/${trainer_project_name}/${trainer_experiment_name}"}
+CKPTS_DIR=${CKPTS_DIR:-"${RAY_DATA_HOME}/ckpts/${trainer_project_name}/${trainer_experiment_name}_${run_timestamp}"}
 TRAIN_FILE=${TRAIN_FILE:-"${REPO_ROOT}/data/musique/train.parquet"}
 TEST_FILE=${TEST_FILE:-"${REPO_ROOT}/data/musique/test.parquet"}
 
 mkdir -p "${CKPTS_DIR}"
 # Per-step JSONL: prompt, full response (incl. <search>/<result>), raw chat messages, num_turns, num_search_calls.
-timestamp="$(date +%Y%m%d_%H%M%S)"
-ROLLOUT_SAVE_PATH="${ROLLOUT_SAVE_PATH:-${CKPTS_DIR}/rollout_${timestamp}}"
+ROLLOUT_SAVE_PATH="${ROLLOUT_SAVE_PATH:-${CKPTS_DIR}/rollout_${run_timestamp}}"
 mkdir -p "${ROLLOUT_SAVE_PATH}"
 if [ "${WANDB_API_KEY}" != "None" ] && [ -n "${WANDB_API_KEY}" ]; then
   wandb login --relogin "${WANDB_API_KEY}"

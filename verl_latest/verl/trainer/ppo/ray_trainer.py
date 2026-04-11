@@ -993,6 +993,41 @@ class RayPPOTrainer:
         with open(local_latest_checkpointed_iteration, "w") as f:
             f.write(str(self.global_steps))
 
+        # Optional: upload each saved checkpoint folder to W&B as a model artifact.
+        # Enable with WANDB_UPLOAD_CHECKPOINTS=true in the launcher environment.
+        upload_ckpt_to_wandb = os.environ.get("WANDB_UPLOAD_CHECKPOINTS", "false").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+        if upload_ckpt_to_wandb:
+            try:
+                import wandb
+
+                if wandb.run is None:
+                    print("WANDB_UPLOAD_CHECKPOINTS=true but wandb.run is not active; skip checkpoint artifact upload.")
+                else:
+                    artifact_name = os.environ.get("WANDB_CHECKPOINT_ARTIFACT_NAME", "").strip()
+                    if not artifact_name:
+                        artifact_name = (
+                            f"{self.config.trainer.project_name}-{self.config.trainer.experiment_name}-checkpoints"
+                        )
+                    artifact = wandb.Artifact(
+                        name=artifact_name,
+                        type="model",
+                        metadata={
+                            "global_step": int(self.global_steps),
+                            "experiment_name": str(self.config.trainer.experiment_name),
+                            "project_name": str(self.config.trainer.project_name),
+                        },
+                    )
+                    artifact.add_dir(local_global_step_folder, name=f"global_step_{self.global_steps}")
+                    wandb.log_artifact(artifact, aliases=[f"step-{self.global_steps}", "latest"])
+                    print(f"Uploaded checkpoint artifact to W&B: {artifact_name} @ step {self.global_steps}")
+            except Exception as e:
+                print(f"Warning: failed to upload checkpoint artifact to W&B: {e}")
+
     def _load_checkpoint(self):
         if self.config.trainer.resume_mode == "disable":
             return 0

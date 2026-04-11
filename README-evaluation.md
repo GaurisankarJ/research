@@ -62,7 +62,6 @@ python -m sglang.launch_server \
   --disable-radix-cache
 ```
 
-
 Change `--model-path` / `--served-model-name` to match your checkpoint.
 
 ### 4. Run Evaluation
@@ -152,11 +151,12 @@ Use `--split train` for `train.jsonl`.
 
 #### Instruct Model
 
-Use the instruct checkpoint for `--generator_model` and **`--apply_chat True`** so prompts use the chat template. Start SGLang with the instruct weights (see §3 **Instruct Model**). Paths and `data_dir` / `save_dir` rules match the base model section; only `generator_model`, `save_note`, and `apply_chat` differ.
+Use the instruct checkpoint for `--generator_model` and `**--apply_chat True**` so prompts use the chat template. Start SGLang with the instruct weights (see §3 **Instruct Model**). Paths and `data_dir` / `save_dir` rules match the base model section; only `generator_model`, `save_note`, and `apply_chat` differ.
 
 Shared defaults here: `--generator_model .../models/Qwen3-0.6B`, `--save_note research_qwen3_instruct`, `--apply_chat True`.
 
 ##### Reasoning (optional)
+
 If you want the model’s intermediate reasoning to be included in the generated text, set `--enable_thinking True`. Evaluation/metrics still extract the final answer from `<answer>...</answer>`, so enabling thinking should not change the answer formatting requirements.
 
 ##### Bamboogle (`data/bamboogle/test.jsonl`)
@@ -182,7 +182,7 @@ python run_eval.py \
   --dataset_name bamboogle \
   --split test \
   --save_dir /zfsstore/user/s4374886/omega/re-search/results/bamboogle \
-  --save_note research_qwen3_reasoning \
+  --save_note research_qwen3_reasoning_base \
   --sgl_remote_url 127.0.0.1:3000 \
   --remote_retriever_url 127.0.0.1:3005 \
   --generator_model /zfsstore/user/s4374886/omega/re-search/models/Qwen3-0.6B \
@@ -291,12 +291,12 @@ Use `--split train` for `train.jsonl`.
 
 ### 5. LLM-as-judge (`scripts/evaluation/llm_judge.py`)
 
-After `run_eval.py` finishes, you can score predictions with an **OpenAI-compatible** chat API (OpenAI, Azure OpenAI, vLLM OpenAI server, etc.). The script reads FlashRAG’s **`intermediate_data.json`** in a run directory and writes **`llm_judge.jsonl`** (one judged record per line) plus **`llm_judge_metric.txt`** (aggregate accuracy).
+After `run_eval.py` finishes, you can score predictions with an **OpenAI-compatible** chat API (OpenAI, Azure OpenAI, vLLM OpenAI server, etc.). The script reads FlashRAG’s `**intermediate_data.json`** in a run directory and writes `**llm_judge.jsonl**` (one judged record per line) plus `**llm_judge_metric.txt**` (aggregate accuracy).
 
 **Inputs**
 
 - `--input_dir`: Path to the **timestamped run folder** that contains `intermediate_data.json` (same folder as `config.yaml` and `metric_score.txt`), e.g.  
-  `.../results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base`
+`.../results/bamboogle/bamboogle_2026_03_27_23_24_research_qwen3_base`
 
 **Outputs** (created next to `intermediate_data.json`)
 
@@ -326,3 +326,77 @@ python llm_judge.py \
 For a **local** OpenAI-compatible server (e.g. vLLM), set `--base_url` to `http://127.0.0.1:11434/v1` and use that server’s model name for `--model_name`.
 
 The judge prompt compares `question`, `golden_answers`, and `output.pred` from each record; ensure `intermediate_data.json` includes those fields (standard FlashRAG eval output).
+
+## Steps to test a VERL-trained model
+
+1. Activate env and go to VERL repo.
+
+```bash
+cd /home/s4374886/omega/re-search/verl_latest
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate r_e
+```
+
+2. Merge FSDP actor checkpoint to HF format (replace `global_step_1000` as needed).
+
+```bash
+python -m verl.model_merger merge \
+  --backend fsdp \
+  --local_dir /home/s4374886/verl/ckpts/research/qwen3_0.6b_instruct_grpo_gpu_1_40gb/global_step_1000/actor \
+  --target_dir /home/s4374886/verl/ckpts/research/qwen3_0.6b_instruct_grpo_gpu_1_40gb/global_step_1000_hf
+```
+
+3. Start SGLang server with the merged model.
+
+```bash
+source /home/s4374886/omega/re-search/scripts/evaluation/env_cuda_alice.sh
+
+# Recommended stability guards on ALICE
+unset LOCAL_RANK RANK WORLD_SIZE LOCAL_WORLD_SIZE MASTER_ADDR MASTER_PORT
+export CUDA_VISIBLE_DEVICES=0
+export PYTORCH_NVML_BASED_CUDA_CHECK=0
+
+python -m sglang.launch_server \
+  --served-model-name qwen3-0.6b-ckpt1000 \
+  --model-path /home/s4374886/verl/ckpts/research/qwen3_0.6b_instruct_grpo_gpu_1_40gb/global_step_1000_hf \
+  --tp 1 \
+  --context-length 8192 \
+  --enable-metrics \
+  --dtype bfloat16 \
+  --host 0.0.0.0 \
+  --port 3000 \
+  --trust-remote-code \
+  --disable-overlap \
+  --disable-radix-cache
+```
+
+4. In another terminal, run evaluation.
+
+```bash
+cd /home/s4374886/omega/re-search/scripts/evaluation
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate r_e
+
+python run_eval.py \
+  --config_path eval_config.yaml \
+  --method_name research \
+  --data_dir /zfsstore/user/s4374886/omega/re-search/data \
+  --dataset_name bamboogle \
+  --split test \
+  --save_dir /zfsstore/user/s4374886/omega/re-search/results/bamboogle \
+  --save_note research_ckpt1000 \
+  --sgl_remote_url 127.0.0.1:3000 \
+  --remote_retriever_url 127.0.0.1:3005 \
+  --generator_model /home/s4374886/verl/ckpts/research/qwen3_0.6b_instruct_grpo_gpu_1_40gb/global_step_1000_hf \
+  --apply_chat True
+```
+
+5. Check outputs under:
+
+`/zfsstore/user/s4374886/omega/re-search/results/bamboogle/<dataset>_<timestamp>_research_ckpt1000/`
+
+Expected files:
+
+- `config.yaml`
+- `metric_score.txt`
+- `intermediate_data.json`
