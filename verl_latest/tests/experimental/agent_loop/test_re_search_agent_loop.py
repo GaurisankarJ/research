@@ -14,11 +14,11 @@ from verl.experimental.agent_loop.re_search_agent_loop import (
 )
 
 
-def test_extract_search_tool_call_accepts_string_arguments():
+def test_extract_search_tool_call_accepts_nested_query_arguments():
     text = """
 <think>Need a fact.</think>
 <tool_call>
-{"name": "search", "arguments": "  Hamlet author  "}
+{"name": "search", "arguments": {"query": "  Hamlet author  "}}
 </tool_call>
 """.strip()
 
@@ -51,15 +51,31 @@ def test_extract_search_tool_call_accepts_string_arguments():
         (
             """
 <tool_call>
-{"name": "search", "arguments": {"query": "Hamlet"}}
+{"name": "search", "arguments": "Hamlet"}
 </tool_call>
 """.strip(),
-            "tool_arguments_not_string",
+            "tool_arguments_not_object",
         ),
         (
             """
 <tool_call>
-{"name": "search", "arguments": "   "}
+{"name": "search", "arguments": {}}
+</tool_call>
+""".strip(),
+            "tool_arguments_query_not_string",
+        ),
+        (
+            """
+<tool_call>
+{"name": "search", "arguments": {"query": 123}}
+</tool_call>
+""".strip(),
+            "tool_arguments_query_not_string",
+        ),
+        (
+            """
+<tool_call>
+{"name": "search", "arguments": {"query": "   "}}
 </tool_call>
 """.strip(),
             "empty_search_query",
@@ -89,7 +105,7 @@ def test_classify_last_segment_no_valid_search_reports_tool_call_shape(text, exp
 def test_digest_response_text_tracks_qwen_tool_tags():
     text = """
 <tool_call>
-{"name": "search", "arguments": "Hamlet author"}
+{"name": "search", "arguments": {"query": "Hamlet author"}}
 </tool_call> <tool_response>
 Hamlet was written by William Shakespeare.
 </tool_response>

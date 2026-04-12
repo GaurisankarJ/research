@@ -121,10 +121,14 @@ def extract_search_tool_call(text: str) -> tuple[str, str]:
         return "", "tool_name_not_search"
 
     arguments = function_call.get("arguments")
-    if not isinstance(arguments, str):
-        return "", "tool_arguments_not_string"
+    if not isinstance(arguments, dict):
+        return "", "tool_arguments_not_object"
 
-    query = arguments.strip()
+    query = arguments.get("query")
+    if not isinstance(query, str):
+        return "", "tool_arguments_query_not_string"
+
+    query = query.strip()
     if not query:
         return "", "empty_search_query"
 

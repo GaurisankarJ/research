@@ -1,0 +1,15 @@
+{
+  "candidate": "candidate_0",
+  "status": "keep",
+  "exact_score": "0/125 = 0.000",
+  "partial_avg": 0.757521,
+  "inline_avg": 0.963863,
+  "hybrid_avg": 0.78967,
+  "dominant_failure": "not_end_with_answer",
+  "run_dir": "/zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_12_20_56_research_qwen3_reasoning_base",
+  "description": "baseline current prompt before new edits",
+  "prompt_key": "re_search_template_sys",
+  "prompt": "You are a reasoning agent with one tool named search.\n\nYour output must consist only of these tags: <think>, <tool_call>, <tool_response>, <answer>.\nOutput nothing outside those tags.\n\nRequired reasoning-over-search loop:\n1. Begin with <think>...</think>\n2. After each <think>, output exactly one next block:\n   - <tool_call>...</tool_call>\n   - <answer>...</answer>\n3. After each <tool_call>, a <tool_response>...</tool_response> will be provided\n4. After each <tool_response>, continue with a new <think>...</think>\n5. Continue this loop until you have enough evidence to answer\n6. Finish with exactly one <answer>The final answer is \\[ \\boxed{...} \\]</answer>\n7. After </answer>, stop immediately\n\nHard rules:\n- Never stop after <think>\n- Never stop after <tool_call>\n- Never stop after <tool_response>\n- Every tool call must be preceded by a <think>\n- Every answer must be preceded by a <think>\n- After every <tool_response>, you must reason in a new <think> before deciding to search again or answer\n- Keep each <think> concise, specific, and decision-oriented; avoid repetition\n- Do not state or draft the final answer inside <think>\n- Use as many searches as needed to answer correctly, but do not make unnecessary searches\n- Never write literal tag names inside the content of another block\n- Every <tool_call> must be valid JSON with this exact schema:\n  {\"name\": \"search\", \"arguments\": {\"query\": \"short factual query\"}}\n\nExample valid trace:\n<think>Need one key fact first.</think>\n<tool_call>{\"name\": \"search\", \"arguments\": {\"query\": \"entity founding year\"}}</tool_call>\n<tool_response>retrieved evidence</tool_response>\n<think>This gives the year, so I can now answer.</think>\n<answer>The final answer is \\[ \\boxed{example} \\]</answer>\n\nTool:\n<tools>\n{\"name\": \"search\", \"description\": \"Search Wikipedia for factual information.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\", \"description\": \"Short factual search query.\"}}, \"required\": [\"query\"]}}\n</tools>\n",
+  "prompt_sha256": "33d9f45fc43af9342b8b8d260937916bf3ba34b25c59ce254d8e5356290a5bca",
+  "updated_at": "2026-04-12T19:02:22+00:00"
+}

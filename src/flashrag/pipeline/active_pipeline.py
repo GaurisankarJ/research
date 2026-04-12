@@ -33,12 +33,13 @@ class ReSearchPipeline(BasicPipeline):
             self.prompt_template = prompt_template_dict['re_search_template']
 
         self.tokenizer = AutoTokenizer.from_pretrained(config["generator_model_path"])
-        self.tokenizer.add_special_tokens({'additional_special_tokens': ["<search>",
-            "</search>",
-            "<answer>",
-            "</answer>",
-            "<result>",
-            "</result>",]})
+        # self.tokenizer.add_special_tokens({'additional_special_tokens': ["<tool_call>",
+        #     "</tool_call>",
+        #     "<tool_response>",
+        #     "</tool_response>",
+        #     "<answer>",
+        #     "</answer>",
+        # ]})
 
     def extract_search_tool_call(self, text: str) -> tuple[str, str]:
         try:
@@ -69,10 +70,14 @@ class ReSearchPipeline(BasicPipeline):
             return "", "tool_name_not_search"
 
         arguments = function_call.get("arguments")
-        if not isinstance(arguments, str):
-            return "", "tool_arguments_not_string"
+        if not isinstance(arguments, dict):
+            return "", "tool_arguments_not_object"
 
-        query = arguments.strip()
+        query = arguments.get("query")
+        if not isinstance(query, str):
+            return "", "tool_arguments_query_not_string"
+
+        query = query.strip()
         if not query:
             return "", "empty_search_query"
 

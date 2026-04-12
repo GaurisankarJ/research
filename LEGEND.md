@@ -58,7 +58,7 @@ srun \
 ## Slurm
 
 ```bash
-squeue --start -j 1380919,1380950
+squeue --start -j 1380919,1380950,1465420
 
 sinfo
 

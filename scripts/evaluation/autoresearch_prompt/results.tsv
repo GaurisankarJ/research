@@ -1,0 +1,4 @@
+commit	candidate	status	exact_score	partial_avg	inline_avg	hybrid_avg	dominant_failure	run_dir	description
+2c32dd3	candidate_0	keep	0/125 = 0.000	0.758	0.964	0.790	not_end_with_answer	/zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_12_20_56_research_qwen3_reasoning_base	baseline current prompt before new edits
+2c32dd3	candidate_1	iterate	0/125 = 0.000	0.727	0.922	0.760	text_outside_tags	/zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_12_21_03_research_qwen3_reasoning_base	explicit incomplete-turn and no-early-stop rules before </answer>
+2c32dd3	candidate_2	iterate	0/125 = 0.000	0.739	0.935	0.780	not_end_with_answer	/zfsstore/user/s4374886/omega/re-search/results/bamboogle/bamboogle_2026_04_12_21_09_research_qwen3_reasoning_base	limit each <think> to at most two short sentences
