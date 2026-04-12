@@ -56,7 +56,7 @@
 ### Multi-turn loop
 
 - **Legacy:** Synchronous loop in `vLLMRolloutWithSearch.generate_sequences`: vLLM `generate` with `stop=['</search>']`, then `batch_search`, then injects `tokenizer.encode(f" <result>\n{result}\n</result>")` (default `encode` special-token behavior), updates `result_mask` (0 on injected tokens). Continues until no active “need search” paths or length cap.
-- **Latest:** Async `ReSearchAgentLoop.run`: repeated `server_manager.generate` with `stop=["</search>"]`; **`add_special_tokens=False`** on injected `<result>` chunk; `response_mask` marks LM tokens vs injected. Stops when a segment completes **without** a valid `<search>…</search>` pair with non-empty query (`segment_completed_without_valid_search`), or budget / max search turns (`search_max_turns` default 32).
+- **Latest:** Async `ReSearchAgentLoop.run`: repeated `server_manager.generate` with `stop=["</tool_call>"]`; **`add_special_tokens=False`** on injected `<tool_response>` chunk; `response_mask` marks LM tokens vs injected. Stops when a segment completes **without** a valid `<tool_call>{"name": "search", "arguments": "..."}</tool_call>` payload with string `arguments`, or budget / max search turns (`search_max_turns` default 32).
 
 **Behavioral nuance:** Latest exposes rich **termination** metadata (`re_search_termination_reason`, `re_search_response_digest`, etc.); legacy does not attach the same `extra_fields`.
 

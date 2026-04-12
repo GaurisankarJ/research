@@ -52,7 +52,7 @@ TRAIN_FILE=${TRAIN_FILE:-"${REPO_ROOT}/data/musique/train.parquet"}
 TEST_FILE=${TEST_FILE:-"${REPO_ROOT}/data/musique/test.parquet"}
 
 mkdir -p "${CKPTS_DIR}"
-# Per-step JSONL: prompt, full response (incl. <search>/<result>), raw chat messages, num_turns, num_search_calls.
+# Per-step JSONL: prompt, full response (incl. <tool_call>/<tool_response>), raw chat messages, num_turns, num_search_calls.
 ROLLOUT_SAVE_PATH="${ROLLOUT_SAVE_PATH:-${CKPTS_DIR}/rollout}"
 mkdir -p "${ROLLOUT_SAVE_PATH}"
 if [ "${WANDB_API_KEY}" != "None" ] && [ -n "${WANDB_API_KEY}" ]; then

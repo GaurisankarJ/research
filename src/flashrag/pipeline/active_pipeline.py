@@ -1,3 +1,4 @@
+import json
 import re
 from tqdm import tqdm
 from typing import List, Tuple
@@ -39,15 +40,47 @@ class ReSearchPipeline(BasicPipeline):
             "<result>",
             "</result>",]})
 
-    def extract_search_content(self, text: str) -> str:
+    def extract_search_tool_call(self, text: str) -> tuple[str, str]:
         try:
-            start_tag = '<search>'
-            end_tag = '</search>'
+            start_tag = '<tool_call>'
+            end_tag = '</tool_call>'
             end_pos = text.rindex(end_tag)
             start_pos = text.rindex(start_tag, 0, end_pos)
-            return text[start_pos + len(start_tag):end_pos].strip()
+            payload = text[start_pos + len(start_tag):end_pos].strip()
         except ValueError:
-            return ""
+            has_open = '<tool_call>' in text
+            has_close = '</tool_call>' in text
+            if not has_close:
+                return "", "open_tool_call_without_close" if has_open else "no_tool_call_close_tag"
+            return "", "close_tool_call_without_prior_open_pair"
+
+        if not payload:
+            return "", "empty_tool_call_payload"
+
+        try:
+            function_call = json.loads(payload)
+        except json.JSONDecodeError:
+            return "", "malformed_tool_call_json"
+
+        if not isinstance(function_call, dict):
+            return "", "tool_call_json_not_object"
+
+        if function_call.get("name") != "search":
+            return "", "tool_name_not_search"
+
+        arguments = function_call.get("arguments")
+        if not isinstance(arguments, str):
+            return "", "tool_arguments_not_string"
+
+        query = arguments.strip()
+        if not query:
+            return "", "empty_search_query"
+
+        return query, "valid_search_tool_call"
+
+    def extract_search_content(self, text: str) -> str:
+        query, status = self.extract_search_tool_call(text)
+        return query if status == "valid_search_tool_call" else ""
 
     def _extract_pred_fallback(self, final_response: str) -> str:
         """Extract the final answer robustly even when format drifts from strict template."""
@@ -92,7 +125,7 @@ class ReSearchPipeline(BasicPipeline):
         step_limit = 512
         turns = 0
         over_length_flag = False
-        stop_tokens = ['</search>', '</answer>', '<|im_end|>', '<|endoftext|>']
+        stop_tokens = ['</tool_call>', '</answer>', '<|im_end|>', '<|endoftext|>']
         # Defaults so we can safely update outputs even if generation stops early.
         prompt_tokens = 0
         completion_tokens = 0
@@ -126,11 +159,11 @@ class ReSearchPipeline(BasicPipeline):
                 remain_length -= curr_step_max_new_tokens
             turns += 1
             
-            if stop_reason == 'stop' and isinstance(stop_matched, str) and '</search>' in stop_matched:
-                output_str = response['text'] + '</search>'
-                search_content = self.extract_search_content(output_str)
+            if stop_reason == 'stop' and isinstance(stop_matched, str) and '</tool_call>' in stop_matched:
+                output_str = response['text'] + '</tool_call>'
+                search_content, search_status = self.extract_search_tool_call(output_str)
                 
-                if search_content != '':
+                if search_status == "valid_search_tool_call":
                     search_result = self.retriever.search(search_content)
                 
                     retrieval_text = ''
@@ -140,7 +173,7 @@ class ReSearchPipeline(BasicPipeline):
                 else:
                     retrieval_text = 'nothing to search'
 
-                query += f"{output_str} <result>\n{retrieval_text}\n</result>"
+                query += f"{output_str} <tool_response>\n{retrieval_text}\n</tool_response>"
             elif stop_reason == 'stop' and (
                 stop_matched == 151643
                 or stop_matched == 151645

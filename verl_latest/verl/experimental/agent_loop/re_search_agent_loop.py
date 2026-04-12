@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 #
 
-"""ReSearch rollout: stop at ``</search>``, call HTTP retriever, inject ``<result>...</result>`` (legacy ``vLLMRolloutWithSearch``).
+"""ReSearch rollout: stop at ``</tool_call>``, call HTTP retriever, inject ``<tool_response>...</tool_response>``.
 
 Text-only (no multimodal processor). Configure ``actor_rollout_ref.rollout.search_url`` and set
 ``actor_rollout_ref.rollout.agent.default_agent_loop=re_search_agent``.
@@ -12,6 +12,7 @@ Text-only (no multimodal processor). Configure ``actor_rollout_ref.rollout.searc
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import time
@@ -34,7 +35,7 @@ logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "WARN"))
 
 
 def _retriever_failed_results(queries: list[str], reason: str) -> list[str]:
-    """One placeholder per query so the LM still receives ``<result>...</result>`` and training can continue."""
+    """One placeholder per query so the LM still receives ``<tool_response>...</tool_response>`` and training can continue."""
     msg = f"Retriever failed: {reason}"
     return [msg] * len(queries)
 
@@ -91,15 +92,48 @@ def _batch_search_http(
             return _retriever_failed_results(queries, str(last_exc))
 
 
-def extract_search_content(text: str) -> str:
+def extract_search_tool_call(text: str) -> tuple[str, str]:
     try:
-        start_tag = "<search>"
-        end_tag = "</search>"
+        start_tag = "<tool_call>"
+        end_tag = "</tool_call>"
         end_pos = text.rindex(end_tag)
         start_pos = text.rindex(start_tag, 0, end_pos)
-        return text[start_pos + len(start_tag) : end_pos].strip()
+        payload = text[start_pos + len(start_tag) : end_pos].strip()
     except ValueError:
-        return ""
+        has_open = "<tool_call>" in text
+        has_close = "</tool_call>" in text
+        if not has_close:
+            return "", "open_tool_call_without_close" if has_open else "no_tool_call_close_tag"
+        return "", "close_tool_call_without_prior_open_pair"
+
+    if not payload:
+        return "", "empty_tool_call_payload"
+
+    try:
+        function_call = json.loads(payload)
+    except json.JSONDecodeError:
+        return "", "malformed_tool_call_json"
+
+    if not isinstance(function_call, dict):
+        return "", "tool_call_json_not_object"
+
+    if function_call.get("name") != "search":
+        return "", "tool_name_not_search"
+
+    arguments = function_call.get("arguments")
+    if not isinstance(arguments, str):
+        return "", "tool_arguments_not_string"
+
+    query = arguments.strip()
+    if not query:
+        return "", "empty_search_query"
+
+    return query, "valid_search_tool_call"
+
+
+def extract_search_content(text: str) -> str:
+    query, status = extract_search_tool_call(text)
+    return query if status == "valid_search_tool_call" else ""
 
 
 def _decode_token_pieces(tokenizer: Any, token_ids: list[int]) -> list[str]:
@@ -114,17 +148,11 @@ def _decode_token_pieces(tokenizer: Any, token_ids: list[int]) -> list[str]:
 
 
 def classify_last_segment_no_valid_search(seg_text: str) -> str:
-    """Why ``need_search`` is false for this LM segment (paired ``<search>q</search>`` with non-empty ``q``)."""
-    has_close = "</search>" in seg_text
-    has_open = "<search>" in seg_text
-    if not has_close:
-        return "open_search_without_close" if has_open else "no_search_close_tag"
-    raw = extract_search_content(seg_text)
-    if raw:
-        return "valid_search_pair_unexpected"
-    if has_open:
-        return "malformed_or_empty_search_query"
-    return "close_search_without_prior_open_pair"
+    """Why ``need_search`` is false for this LM segment (valid search tool call not found)."""
+    _, status = extract_search_tool_call(seg_text)
+    if status == "valid_search_tool_call":
+        return "valid_search_tool_call_unexpected"
+    return status
 
 
 def _digest_response_text(text: str, *, preview_chars: int = 160) -> dict[str, Any]:
@@ -138,14 +166,14 @@ def _digest_response_text(text: str, *, preview_chars: int = 160) -> dict[str, A
     head = text[:preview_chars] if n > preview_chars else text
     return {
         "response_chars": n,
-        "n_lm_search_close": text.count("</search>"),
-        "n_injected_result_close": text.count("</result>"),
+        "n_lm_tool_call_close": text.count("</tool_call>"),
+        "n_injected_tool_response_close": text.count("</tool_response>"),
         "thinking_paired": paired("<redacted_thinking>", "</redacted_thinking>"),
         "answer_paired": paired("<answer>", "</answer>"),
         "answer_open_only": "<answer>" in text and "</answer>" not in text,
         "answer_close_only": "</answer>" in text and "<answer>" not in text,
-        "search_tags_present": "<search>" in text or "</search>" in text,
-        "result_tags_present": "<result>" in text or "</result>" in text,
+        "tool_call_tags_present": "<tool_call>" in text or "</tool_call>" in text,
+        "tool_response_tags_present": "<tool_response>" in text or "</tool_response>" in text,
         "has_boxed": "\\boxed" in text,
         "head_preview": head,
         "tail_preview": tail,
@@ -183,7 +211,7 @@ def _format_termination_reason(code: str, digest: dict[str, Any]) -> str:
         code,
         f"tok={digest['response_tokens_emitted']}/{digest['response_budget_tokens']}",
         f"lm_tok={digest.get('lm_output_token_count')}",
-        f"injected_tok={digest.get('injected_result_token_count')}",
+        f"injected_tok={digest.get('injected_tool_response_token_count')}",
         f"search_calls={digest['search_http_calls']}",
         f"answer_paired={digest.get('answer_paired')}",
         f"thinking_paired={digest.get('thinking_paired')}",
@@ -202,7 +230,7 @@ def _format_termination_reason(code: str, digest: dict[str, Any]) -> str:
 
 @register("re_search_agent")
 class ReSearchAgentLoop(AgentLoopBase):
-    """Multi-segment generation with ``</search>`` stops and HTTP retrieval (legacy port)."""
+    """Multi-segment generation with ``</tool_call>`` stops and HTTP retrieval."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -267,7 +295,7 @@ class ReSearchAgentLoop(AgentLoopBase):
                 seg_params = {
                     **base_sp,
                     "max_tokens": remaining,
-                    "stop": ["</search>"],
+                    "stop": ["</tool_call>"],
                 }
 
                 output: TokenOutput = await self.server_manager.generate(
@@ -291,7 +319,8 @@ class ReSearchAgentLoop(AgentLoopBase):
 
                 seg_text = self.tokenizer.decode(new_ids, skip_special_tokens=False)
                 last_lm_segment_text = seg_text
-                need_search = "</search>" in seg_text and extract_search_content(seg_text) != ""
+                search_query, search_status = extract_search_tool_call(seg_text)
+                need_search = search_status == "valid_search_tool_call"
 
                 response_tokens.extend(new_ids)
                 response_mask.extend([1] * len(new_ids))
@@ -306,7 +335,7 @@ class ReSearchAgentLoop(AgentLoopBase):
                     last_segment_no_search_class = classify_last_segment_no_valid_search(seg_text)
                     break
 
-                queries = [extract_search_content(seg_text)]
+                queries = [search_query]
                 with simple_timer("tool_calls", timing):
                     results = await self.loop.run_in_executor(
                         None,
@@ -315,7 +344,7 @@ class ReSearchAgentLoop(AgentLoopBase):
                         ),
                     )
                 result_text = results[0] if results else ""
-                result_suffix = f" <result>\n{result_text}\n</result>"
+                result_suffix = f" <tool_response>\n{result_text}\n</tool_response>"
                 result_ids = self.tokenizer.encode(result_suffix, add_special_tokens=False)
 
                 response_tokens.extend(result_ids)
@@ -351,7 +380,7 @@ class ReSearchAgentLoop(AgentLoopBase):
         )
         lm_tok = int(sum(response_mask))
         merged_digest["lm_output_token_count"] = lm_tok
-        merged_digest["injected_result_token_count"] = len(clipped) - lm_tok
+        merged_digest["injected_tool_response_token_count"] = len(clipped) - lm_tok
         if last_lm_segment_text:
             merged_digest["last_lm_segment_head_preview"] = last_lm_segment_text[:220]
             merged_digest["last_lm_segment_tail_preview"] = last_lm_segment_text[-220:]

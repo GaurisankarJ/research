@@ -1,7 +1,34 @@
+import json
 import re
 import string
 from collections import Counter
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Optional
+
+
+def _validate_search_tool_call(payload: str) -> tuple[bool, str]:
+    payload = payload.strip()
+    if not payload:
+        return False, "tool_call payload is empty"
+
+    try:
+        function_call = json.loads(payload)
+    except json.JSONDecodeError:
+        return False, "tool_call payload is not valid JSON"
+
+    if not isinstance(function_call, dict):
+        return False, "tool_call payload must be a JSON object"
+
+    if function_call.get("name") != "search":
+        return False, 'tool_call name must be "search"'
+
+    arguments = function_call.get("arguments")
+    if not isinstance(arguments, str):
+        return False, "tool_call arguments must be a string"
+
+    if not arguments.strip():
+        return False, "tool_call arguments cannot be empty"
+
+    return True, "ok"
 
 
 def _extract_response_text(solution_str: str) -> str:
@@ -13,7 +40,7 @@ def _extract_response_text(solution_str: str) -> str:
     return solution_str.strip()
 
 
-def _normalize_ground_truth(ground_truth: Any) -> Union[str, List[str]]:
+def _normalize_ground_truth(ground_truth: Any) -> str | list[str]:
     """Align with Search-R1 / MuSiQue parquet labels (str, list, or dict with ``target``)."""
     if isinstance(ground_truth, dict) and "target" in ground_truth:
         t = ground_truth["target"]
@@ -23,7 +50,7 @@ def _normalize_ground_truth(ground_truth: Any) -> Union[str, List[str]]:
         return [str(x) for x in t]
     return str(t)
 
-def validate_format(text: str) -> Tuple[bool, str]:
+def validate_format(text: str) -> tuple[bool, str]:
     # check if <think></think>, <answer></answer> is paired
     if text.count('<think>') != text.count('</think>'):
         return False, "<think> </think> not paired"
@@ -34,24 +61,32 @@ def validate_format(text: str) -> Tuple[bool, str]:
     if text.count('<answer>') != 1 or text.count('</answer>') != 1:
         return False, "<answer> or </answer> not found"        
     
-    # check the order of search/result
+    # check the order of tool_call/tool_response
     current_pos = 0
     while True:
-        search_pos = text.find('<search>', current_pos)
-        if search_pos == -1:
+        tool_call_pos = text.find('<tool_call>', current_pos)
+        if tool_call_pos == -1:
             break
             
-        result_pos = text.find('<result>', search_pos)
-        search_end_pos = text.find('</search>', search_pos)
-        result_end_pos = text.find('</result>', result_pos)
+        tool_response_pos = text.find('<tool_response>', tool_call_pos)
+        tool_call_end_pos = text.find('</tool_call>', tool_call_pos)
+        tool_response_end_pos = text.find('</tool_response>', tool_response_pos)
         
-        if -1 in (result_pos, search_end_pos, result_end_pos):
-            return False, "search/result tags are incomplete"
+        if -1 in (tool_response_pos, tool_call_end_pos, tool_response_end_pos):
+            return False, "tool_call/tool_response tags are incomplete"
             
-        if not (search_pos < search_end_pos < result_pos < result_end_pos):
-            return False, "search/result tags are nested in the wrong order"
+        if not (tool_call_pos < tool_call_end_pos < tool_response_pos < tool_response_end_pos):
+            return False, "tool_call/tool_response tags are nested in the wrong order"
+
+        payload = text[tool_call_pos + len('<tool_call>'):tool_call_end_pos]
+        valid_payload, payload_reason = _validate_search_tool_call(payload)
+        if not valid_payload:
+            return False, payload_reason
             
-        current_pos = result_end_pos
+        current_pos = tool_response_end_pos
+
+    if any(tag in text for tag in ('<search>', '</search>', '<result>', '</result>')):
+        return False, "legacy search/result tags are not allowed"
     
     # check if \boxed{} is in the answer
     answer_start = text.find('<answer>')
@@ -132,7 +167,7 @@ def normalize_answer(s):
 
     return white_space_fix(remove_articles(remove_punc(lower(s))))
 
-def get_f1_score(prediction: str, ground_truths: Union[str, List[str]]):
+def get_f1_score(prediction: str, ground_truths: str | list[str]):
     if isinstance(ground_truths, str):
         ground_truths = [ground_truths]
     
@@ -169,7 +204,7 @@ def compute_score(
     solution_str: str,
     ground_truth: Any,
     tokenizer: Optional[Any] = None,
-) -> Tuple[float, str]:
+) -> tuple[float, str]:
     """ReSearch-style reward: strict tags + token F1 vs labels.
 
     ``solution_str`` may be a full chat decode or **response-only** (as passed by ``NaiveRewardManager``).
@@ -197,7 +232,7 @@ def compute_score(
         except Exception as e:
             return 0, f'find box error: {e}'
     else:
-        return 0, f'cannot extract answer'
+        return 0, 'cannot extract answer'
 
     f1_score = get_f1_score(answer, gt)
     if f1_score > 0:
