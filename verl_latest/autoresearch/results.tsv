@@ -1,0 +1,5 @@
+commit	candidate	status	search_calls_mean	good_traces	description
+90d9f82	re_search_template_sys_iter_4	keep	1.0022	27086/27372	best completed prior baseline; almost always searches, but still rarely emits a second <think>
+90d9f82	re_search_template_sys_iter_5	discard	0.9851	44/672	stricter tag-only wording regressed into zero-search and no-answer traces
+90d9f82	re_search_template_sys_iter_6	discard	1.0588	352/612	transition wording improved format somewhat but still allowed think-only stalls and zero-search failures
+90d9f82	re_search_template_sys_iter_7	keep	1.0050	1046/1200	best new base so far; near-eliminates zero-search traces, but many outputs still stop after <result> instead of continuing with a second <think>
