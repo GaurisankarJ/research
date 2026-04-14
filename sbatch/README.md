@@ -71,7 +71,7 @@ srun --overlap --ntasks=1 ...
 For testing from inside an existing interactive `srun --pty bash` allocation, skip the nested Slurm step and run the training stage directly:
 
 ```bash
-RUN_TRAIN_DIRECT=1 RETRIEVER_CONFIG=retriever_config.yaml bash sbatch/retriever_then_z_run_qwen3_0.6b_grpo_vllm_instruct_gpu_1_a100_80gb.sbatch
+RUN_TRAIN_DIRECT=1 RETRIEVER_CONFIG=retriever_config_mini.yaml bash sbatch/retriever_then_z_run_qwen3_0.6b_grpo_vllm_instruct_gpu_1_a100_80gb.sbatch
 ```
 
 ## Mock Validation
@@ -97,3 +97,4 @@ This checks:
 - The training scripts already default `SEARCH_URL` to `http://127.0.0.1:3005`, but the wrappers export it explicitly.
 - After `conda activate`, the wrappers prepend `${CONDA_PREFIX}/lib` to `LD_LIBRARY_PATH` so the compute node uses the env’s OpenSSL libraries instead of the older system copy.
 - If `sbatch --test-only` reports controller connectivity errors outside the cluster environment, the mock test script treats that as an environment limitation rather than a wrapper failure.
+

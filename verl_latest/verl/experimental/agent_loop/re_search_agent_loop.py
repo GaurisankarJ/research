@@ -34,31 +34,53 @@ logger = logging.getLogger(__name__)
 logger.setLevel(os.getenv("VERL_LOGGING_LEVEL", "WARN"))
 
 
+def _preview_query(query: str, *, limit: int = 120) -> str:
+    text = " ".join(query.split())
+    if len(text) <= limit:
+        return text
+    return text[: limit - 3] + "..."
+
+
 def _retriever_failed_results(queries: list[str], reason: str) -> list[str]:
     """One placeholder per query so the LM still receives ``<tool_response>...</tool_response>`` and training can continue."""
     msg = f"Retriever failed: {reason}"
     return [msg] * len(queries)
 
 
-def _batch_search_http_attempt(search_url: str, queries: list[str], top_n: int, timeout_s: float) -> list[str]:
+def _batch_search_http_attempt(
+    search_url: str, queries: list[str], top_n: int, timeout_s: float
+) -> tuple[list[str], dict[str, Any]]:
     """Single POST + parse; raises on HTTP/JSON/shape errors (caller may retry)."""
     import requests
 
     url = f"{search_url.rstrip('/')}/batch_search"
+    attempt_start = time.perf_counter()
+    post_start = attempt_start
     resp = requests.post(url, json={"query": queries, "top_n": top_n}, timeout=timeout_s)
+    post_end = time.perf_counter()
     resp.raise_for_status()
+    json_start = time.perf_counter()
     payload = resp.json()
+    json_end = time.perf_counter()
+    format_start = time.perf_counter()
     result_list: list[str] = []
     for item in payload:
         curr = ""
         for line in item:
             curr += f"{line['contents']}\n\n"
         result_list.append(curr.strip())
+    format_end = time.perf_counter()
     if len(result_list) != len(queries):
         raise ValueError(
             f"result count mismatch (got {len(result_list)}, expected {len(queries)})"
         )
-    return result_list
+    return result_list, {
+        "http_roundtrip_s": post_end - post_start,
+        "response_json_s": json_end - json_start,
+        "result_format_s": format_end - format_start,
+        "client_attempt_s": format_end - attempt_start,
+        "num_results": len(result_list),
+    }
 
 
 def _batch_search_http(
@@ -69,27 +91,61 @@ def _batch_search_http(
     *,
     max_attempts: int = 5,
     sleep_s: float = 1.0,
-) -> list[str]:
+) -> tuple[list[str], dict[str, Any]]:
     """Same as legacy ``@retry(5)`` on HTTP retrieval; after all attempts fail, return placeholders (no raise)."""
     if len(queries) == 0:
-        return []
+        return [], {
+            "status": "skipped_empty",
+            "attempts": 0,
+            "retry_count": 0,
+            "retry_sleep_s": 0.0,
+            "query_count": 0,
+            "query_chars": 0,
+        }
     if max_attempts < 1:
         raise ValueError("max_attempts must be >= 1")
     last_exc: Exception | None = None
+    total_start = time.perf_counter()
+    retry_sleep_s = 0.0
     for i in range(max_attempts):
         try:
-            return _batch_search_http_attempt(search_url, queries, top_n, timeout_s)
+            results, attempt_debug = _batch_search_http_attempt(search_url, queries, top_n, timeout_s)
+            total_elapsed_s = time.perf_counter() - total_start
+            return results, {
+                "status": "ok",
+                "attempts": i + 1,
+                "retry_count": i,
+                "retry_sleep_s": retry_sleep_s,
+                "query_count": len(queries),
+                "query_chars": sum(len(q) for q in queries),
+                "total_client_s": total_elapsed_s,
+                **attempt_debug,
+            }
         except Exception as e:
             last_exc = e
             if i < max_attempts - 1:
+                retry_sleep_s += sleep_s
                 time.sleep(sleep_s)
                 continue
+            total_elapsed_s = time.perf_counter() - total_start
             logger.warning(
-                "batch_search failed after %s attempts: %s",
+                "batch_search failed after %s attempts (query_count=%s top_n=%s total_client_s=%.3f): %s",
                 max_attempts,
+                len(queries),
+                top_n,
+                total_elapsed_s,
                 last_exc,
             )
-            return _retriever_failed_results(queries, str(last_exc))
+            return _retriever_failed_results(queries, str(last_exc)), {
+                "status": "failed",
+                "attempts": max_attempts,
+                "retry_count": max_attempts - 1,
+                "retry_sleep_s": retry_sleep_s,
+                "query_count": len(queries),
+                "query_chars": sum(len(q) for q in queries),
+                "total_client_s": total_elapsed_s,
+                "error": repr(last_exc),
+            }
 
 
 def extract_search_tool_call(text: str) -> tuple[str, str]:
@@ -288,6 +344,13 @@ class ReSearchAgentLoop(AgentLoopBase):
         last_lm_end_token_id: int | None = None
         last_lm_stop_reason: str | None = None
         last_lm_segment_token_ids: list[int] | None = None
+        search_debug_events: list[dict[str, Any]] = []
+        total_tool_call_wall_s = 0.0
+        total_http_roundtrip_s = 0.0
+        total_response_json_s = 0.0
+        total_result_format_s = 0.0
+        total_retry_sleep_s = 0.0
+        total_retries = 0
 
         with simple_timer("generate_sequences", timing):
             while len(response_tokens) < self.response_length and search_segments < self.search_max_turns:
@@ -340,13 +403,45 @@ class ReSearchAgentLoop(AgentLoopBase):
                     break
 
                 queries = [search_query]
+                tool_call_start = time.perf_counter()
                 with simple_timer("tool_calls", timing):
-                    results = await self.loop.run_in_executor(
+                    results, search_debug = await self.loop.run_in_executor(
                         None,
                         lambda q=queries: _batch_search_http(
                             self.search_url, q, self.search_top_n, self.search_http_timeout_s
                         ),
                     )
+                tool_call_wall_s = time.perf_counter() - tool_call_start
+                first_query = queries[0] if queries else ""
+                search_debug = {
+                    **search_debug,
+                    "tool_call_wall_s": tool_call_wall_s,
+                    "top_n": self.search_top_n,
+                    "query_preview": _preview_query(first_query),
+                }
+                search_debug_events.append(search_debug)
+                total_tool_call_wall_s += tool_call_wall_s
+                total_http_roundtrip_s += float(search_debug.get("http_roundtrip_s", 0.0))
+                total_response_json_s += float(search_debug.get("response_json_s", 0.0))
+                total_result_format_s += float(search_debug.get("result_format_s", 0.0))
+                total_retry_sleep_s += float(search_debug.get("retry_sleep_s", 0.0))
+                total_retries += int(search_debug.get("retry_count", 0))
+                logger.info(
+                    "re_search batch_search status=%s attempts=%s retries=%s tool_call_wall_s=%.3f "
+                    "http_roundtrip_s=%.3f response_json_s=%.3f result_format_s=%.3f retry_sleep_s=%.3f "
+                    "query_chars=%s top_n=%s preview=%r",
+                    search_debug.get("status"),
+                    search_debug.get("attempts"),
+                    search_debug.get("retry_count"),
+                    tool_call_wall_s,
+                    float(search_debug.get("http_roundtrip_s", 0.0)),
+                    float(search_debug.get("response_json_s", 0.0)),
+                    float(search_debug.get("result_format_s", 0.0)),
+                    float(search_debug.get("retry_sleep_s", 0.0)),
+                    search_debug.get("query_chars"),
+                    self.search_top_n,
+                    search_debug.get("query_preview"),
+                )
                 result_text = results[0] if results else ""
                 result_suffix = f" <tool_response>\n{result_text}\n</tool_response>"
                 result_ids = self.tokenizer.encode(result_suffix, add_special_tokens=False)
@@ -403,6 +498,15 @@ class ReSearchAgentLoop(AgentLoopBase):
             merged_digest["last_lm_segment_decoded_pieces"] = _decode_token_pieces(
                 self.tokenizer, last_lm_segment_token_ids
             )
+        if search_debug_events:
+            merged_digest["search_call_count"] = len(search_debug_events)
+            merged_digest["search_tool_call_wall_s_total"] = total_tool_call_wall_s
+            merged_digest["search_http_roundtrip_s_total"] = total_http_roundtrip_s
+            merged_digest["search_response_json_s_total"] = total_response_json_s
+            merged_digest["search_result_format_s_total"] = total_result_format_s
+            merged_digest["search_retry_sleep_s_total"] = total_retry_sleep_s
+            merged_digest["search_retry_count_total"] = total_retries
+            merged_digest["last_search_debug"] = search_debug_events[-1]
 
         termination_reason = _format_termination_reason(termination_code, merged_digest)
 

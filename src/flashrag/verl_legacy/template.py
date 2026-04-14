@@ -22,8 +22,10 @@ Output only these blocks and nothing else:
 <answer>...</answer>
 
 # Tool
-The only available tool is search.
-Use it to search Wikipedia for factual information.
+The available tool is:
+<tools>
+{"name":"search","description":"Search Wikipedia for factual information about specific topics.","parameters":{"type":"object","properties":{"query":{"type":"string","description":"The search query."}},"required":["query"]}}
+</tools>
 
 Every tool call must be valid JSON with this exact schema:
 <tool_call>{"name":"search","arguments":{"query":"short factual query"}}</tool_call>
