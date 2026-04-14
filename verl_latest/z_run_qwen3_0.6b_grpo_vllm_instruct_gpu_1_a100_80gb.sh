@@ -84,7 +84,7 @@ trainer_project_name="${WANDB_PROJECT}"
 trainer_experiment_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_80gb}"
 # Checkpoints: ray_trainer only saves when save_freq > 0. -1 disables checkpoint writes (smoke tests).
 # Metrics (console + wandb) log every training step regardless. Override e.g. SAVE_FREQ=1 (every step) or -1 (no ckpt).
-SAVE_FREQ="${SAVE_FREQ:-1000}"
+SAVE_FREQ="${SAVE_FREQ:-100}"
 # Hydra default resume_mode=auto reloads latest global_step_* under CKPTS_DIR. Use RESUME_MODE=auto to resume.
 RESUME_MODE="${RESUME_MODE:-disable}"
 
@@ -233,6 +233,6 @@ python3 -m verl.trainer.main_ppo \
     trainer.n_gpus_per_node=$trainer_n_gpus_per_node \
     trainer.nnodes=$trainer_nnodes \
     trainer.save_freq=${SAVE_FREQ} \
-    trainer.test_freq=1000 \
+    trainer.test_freq=-1 \
     trainer.total_epochs=2 \
     trainer.val_before_train=${VAL_BEFORE_TRAIN} 2>&1 | tee ${LOG_PATH}
