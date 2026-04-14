@@ -27,6 +27,7 @@ from omegaconf import OmegaConf
 from verl import DataProto
 from verl.experimental.reward_loop.reward_manager import register
 from verl.experimental.reward_loop.reward_manager.base import RewardManagerBase
+from verl.utils.import_utils import load_extern_object
 from verl.utils.reward_score import default_compute_score
 from verl.utils.reward_score import re_search as re_search_score
 
@@ -51,6 +52,15 @@ class ReSearchRewardManagerWithSave(RewardManagerBase):
         self.reward_model_tokenizer = reward_model_tokenizer
         self.save_path = OmegaConf.select(config, "data.save_path")
         self.num_examine = OmegaConf.select(config, "reward.num_examine")
+        self.re_search_function_path = OmegaConf.select(config, "reward.re_search_function.path") or None
+        self.re_search_function_name = OmegaConf.select(config, "reward.re_search_function.name") or "compute_score"
+        if self.re_search_function_path:
+            self.re_search_compute_score = load_extern_object(
+                module_path=self.re_search_function_path,
+                object_name=self.re_search_function_name,
+            )
+        else:
+            self.re_search_compute_score = re_search_score.compute_score
         if self.num_examine is None:
             self.num_examine = 0
         self._examine_counts: dict[str, int] = {}
@@ -69,11 +79,17 @@ class ReSearchRewardManagerWithSave(RewardManagerBase):
             extra_reward_kwargs["reward_model_tokenizer"] = self.reward_model_tokenizer
 
         if data_source in _RESEARCH_DATA_SOURCES:
-            score_t = re_search_score.compute_score(
-                solution_str,
-                ground_truth,
-                tokenizer=self.tokenizer,
-            )
+            try:
+                score_t = self.re_search_compute_score(
+                    solution_str,
+                    ground_truth,
+                    tokenizer=self.tokenizer,
+                )
+            except TypeError as exc:
+                if self.re_search_function_path and "tokenizer" in str(exc):
+                    score_t = self.re_search_compute_score(solution_str, ground_truth)
+                else:
+                    raise
             if isinstance(score_t, tuple):
                 reward_f, reason = float(score_t[0]), str(score_t[1])
             else:

@@ -1,0 +1,16 @@
+run:
+  experiment_name: example_prompt_reward_temp08_topp095
+  variant: z
+  output_root: runs
+
+prompt:
+  path: prompt.txt
+  template_name: re_search_template_sys
+
+reward:
+  path: reward.py
+  function_name: compute_score
+
+sampling:
+  temperature: 0.8
+  top_p: 0.95

@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 re_search_template = """A conversation between User and Assistant. \
 The user asks a question, and the assistant solves it. \
 The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. \
@@ -76,10 +79,17 @@ def build_qwen_manual_chat_prompt(
     return "".join(parts) + suffix
 
 
+def load_prompt_template_text(path: str) -> str:
+    """Load a prompt template body from a plain text file."""
+    template_path = Path(path).expanduser().resolve()
+    return template_path.read_text(encoding="utf-8")
+
+
 __all__ = [
     "re_search_template",
     "re_search_template_sys",
     "prompt_template_dict",
     "QWEN_CHAT_IM_END",
     "build_qwen_manual_chat_prompt",
+    "load_prompt_template_text",
 ]

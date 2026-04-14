@@ -60,6 +60,14 @@ WANDB_PROJECT="${WANDB_PROJECT:-research}"
 export WANDB_UPLOAD_CHECKPOINTS="${WANDB_UPLOAD_CHECKPOINTS:-true}"
 # Optional override for artifact name when WANDB_UPLOAD_CHECKPOINTS=true.
 export WANDB_CHECKPOINT_ARTIFACT_NAME="${WANDB_CHECKPOINT_ARTIFACT_NAME:-qwen3_0.6b}"
+PROMPT_TEMPLATE_NAME="${PROMPT_TEMPLATE_NAME:-re_search_template_sys}"
+PROMPT_TEMPLATE_PATH="${PROMPT_TEMPLATE_PATH:-}"
+RE_SEARCH_REWARD_FUNCTION_PATH="${RE_SEARCH_REWARD_FUNCTION_PATH:-}"
+RE_SEARCH_REWARD_FUNCTION_NAME="${RE_SEARCH_REWARD_FUNCTION_NAME:-compute_score}"
+ROLLOUT_TEMPERATURE="${ROLLOUT_TEMPERATURE:-${TEMPERATURE:-1.0}}"
+ROLLOUT_TOP_P="${ROLLOUT_TOP_P:-${TOP_P:-1.0}}"
+export ROLLOUT_TEMPERATURE
+export ROLLOUT_TOP_P
 
 # Repo checkout root (models/, data/musique/ — same layout as scripts/train/train.sh)
 if REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
@@ -112,14 +120,47 @@ mkdir -p "${CKPTS_DIR}"
 # Per-step JSONL: prompt, full response (incl. <tool_call>/<tool_response>), raw chat messages, num_turns, num_search_calls.
 ROLLOUT_SAVE_PATH="${ROLLOUT_SAVE_PATH:-${CKPTS_DIR}/rollout_${run_timestamp}}"
 mkdir -p "${ROLLOUT_SAVE_PATH}"
-if [ "${WANDB_API_KEY}" != "None" ] && [ -n "${WANDB_API_KEY}" ]; then
+if [ "${SKIP_WANDB_LOGIN:-0}" != "1" ] && [ "${WANDB_API_KEY}" != "None" ] && [ -n "${WANDB_API_KEY}" ]; then
   wandb login --relogin "${WANDB_API_KEY}"
   # Run files / local wandb cache colocated with checkpoints (entity from WANDB_ENTITY in .env if set).
   export WANDB_DIR="${CKPTS_DIR}"
 fi
 
 mkdir -p "${RAY_DATA_HOME}/logs/${trainer_project_name}"
-LOG_PATH="${RAY_DATA_HOME}/logs/${trainer_project_name}/${trainer_experiment_name}.log"
+LOG_PATH="${LOG_PATH:-${RAY_DATA_HOME}/logs/${trainer_project_name}/${trainer_experiment_name}.log}"
+mkdir -p "$(dirname "${LOG_PATH}")"
+
+if [ "${PRINT_EFFECTIVE_CONFIG_ONLY:-0}" = "1" ]; then
+  EFFECTIVE_CONFIG_PATH="${EFFECTIVE_CONFIG_PATH:-${CKPTS_DIR}/effective_launch_config.json}"
+  mkdir -p "$(dirname "${EFFECTIVE_CONFIG_PATH}")"
+  export EFFECTIVE_CONFIG_PATH
+  python3 - <<'PY'
+import json
+import os
+
+keys = [
+    "WANDB_PROJECT",
+    "WANDB_EXPERIMENT_NAME",
+    "PROMPT_TEMPLATE_NAME",
+    "PROMPT_TEMPLATE_PATH",
+    "RE_SEARCH_REWARD_FUNCTION_PATH",
+    "RE_SEARCH_REWARD_FUNCTION_NAME",
+    "ROLLOUT_TEMPERATURE",
+    "ROLLOUT_TOP_P",
+    "RAY_DATA_HOME",
+    "CKPTS_DIR",
+    "ROLLOUT_SAVE_PATH",
+    "LOG_PATH",
+    "SEARCH_URL",
+]
+payload = {key: os.environ.get(key, "") for key in keys}
+payload["trainer_experiment_name"] = os.environ.get("WANDB_EXPERIMENT_NAME", "")
+with open(os.environ["EFFECTIVE_CONFIG_PATH"], "w", encoding="utf-8") as f:
+    json.dump(payload, f, indent=2)
+print(f"Wrote effective config to {os.environ['EFFECTIVE_CONFIG_PATH']}")
+PY
+  exit 0
+fi
 
 # Live Weave: same row payload as rollout JSONL (``pip install weave``). Off: TRAINER_WEAVE_ROLLOUT_LIVE=false
 TRAINER_WEAVE_ROLLOUT_LIVE="${TRAINER_WEAVE_ROLLOUT_LIVE:-false}"
@@ -187,7 +228,8 @@ python3 -m verl.trainer.main_ppo \
     data.train_files=${TRAIN_FILE} \
     data.val_files=${TEST_FILE} \
     data.prompt_key=question \
-    +data.prompt_template_name=re_search_template_sys \
+    +data.prompt_template_name=${PROMPT_TEMPLATE_NAME} \
+    +data.prompt_template_path="${PROMPT_TEMPLATE_PATH}" \
     +data.re_search_use_chat_format=True \
     +data.re_search_add_qwen_chat=${RE_SEARCH_ADD_QWEN_CHAT} \
     +data.re_search_add_thinking=${RE_SEARCH_ADD_THINKING} \
@@ -221,6 +263,8 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.rollout.response_length=${max_response_length} \
     actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
     actor_rollout_ref.rollout.name=vllm \
+    actor_rollout_ref.rollout.temperature=${ROLLOUT_TEMPERATURE} \
+    actor_rollout_ref.rollout.top_p=${ROLLOUT_TOP_P} \
     actor_rollout_ref.rollout.gpu_memory_utilization=${vllm_gpu_mem_util} \
     actor_rollout_ref.rollout.max_model_len=${vllm_max_model_len} \
     actor_rollout_ref.rollout.max_num_seqs=${vllm_max_num_seqs} \
@@ -234,6 +278,8 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     actor_rollout_ref.ref.use_torch_compile=False \
     reward.reward_manager.name=re_search \
+    +reward.re_search_function.path="${RE_SEARCH_REWARD_FUNCTION_PATH}" \
+    +reward.re_search_function.name="${RE_SEARCH_REWARD_FUNCTION_NAME}" \
     algorithm.kl_ctrl.kl_coef=0.001 \
     trainer.critic_warmup=0 \
     trainer.project_name=${trainer_project_name} \

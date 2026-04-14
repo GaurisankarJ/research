@@ -1,0 +1,40 @@
+{
+  "created_at": "2026-04-14T22:48:34",
+  "config_path": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/config.yaml",
+  "experiment_name": "example_prompt_reward_temp08_topp095",
+  "variant": "z",
+  "run_name": "20260414_224834_example_prompt_reward_temp08_topp095",
+  "run_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095",
+  "inputs": {
+    "config": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/inputs/config.yaml",
+    "prompt": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/inputs/prompt.txt",
+    "reward": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/inputs/reward.py"
+  },
+  "outputs": {
+    "logs_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs",
+    "trainer_log": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs/trainer.log",
+    "retriever_log": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs/retriever.log",
+    "slurm_stdout": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs/slurm-%x-%j.out",
+    "slurm_stderr": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs/slurm-%x-%j.err",
+    "checkpoints_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/checkpoints",
+    "rollouts_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/rollouts",
+    "runtime_state_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/runtime_state",
+    "tmp_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/tmp"
+  },
+  "sampling": {
+    "temperature": 0.8,
+    "top_p": 0.95
+  },
+  "submit_command": [
+    "sbatch",
+    "--job-name",
+    "20260414_224834_example_prompt_reward_temp08_topp095",
+    "--chdir",
+    "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095",
+    "--output",
+    "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs/slurm-%x-%j.out",
+    "--error",
+    "/zfsstore/user/s4374886/omega/re-search/experiments/example_single_config_ablation/runs/20260414_224834_example_prompt_reward_temp08_topp095/logs/slurm-%x-%j.err",
+    "/zfsstore/user/s4374886/omega/re-search/sbatch/retriever_then_z_run_qwen3_0.6b_grpo_vllm_instruct_gpu_1_a100_80gb.sbatch"
+  ]
+}

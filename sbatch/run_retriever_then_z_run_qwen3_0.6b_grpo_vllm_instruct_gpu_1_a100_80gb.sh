@@ -157,6 +157,11 @@ if [ "${MOCK_TRAIN:-0}" = "1" ]; then
   exit 0
 fi
 
+if [ "${PRINT_EFFECTIVE_CONFIG_ONLY:-0}" = "1" ]; then
+  cd "${REPO_ROOT}/verl_latest"
+  exec bash "${TRAINING_SCRIPT}" "$@"
+fi
+
 activate_env r_t
 cd "${REPO_ROOT}/verl_latest"
 exec bash "${TRAINING_SCRIPT}" "$@"
@@ -172,6 +177,8 @@ launch_training_step() {
   export MOCK_TRAIN
   export MOCK_TRAIN_MARKER
   export TRAINING_SCRIPT
+  export PRINT_EFFECTIVE_CONFIG_ONLY
+  export EFFECTIVE_CONFIG_PATH
 
   create_train_step_script
 

@@ -84,6 +84,9 @@ srun \
 ```bash
 squeue --start -j 1500344,1500332,1500295,1500293,1501765
 
+# TEST
+squeue --start -j 1506780
+
 sinfo
 
 squeue -u $USER

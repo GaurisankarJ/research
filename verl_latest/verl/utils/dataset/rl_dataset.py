@@ -152,26 +152,32 @@ class RLHFDataset(Dataset):
 
         # ReSearch / legacy verl: build prompts from ``verl.utils.dataset.re_search_templates`` + a string column.
         self.prompt_template_name = config.get("prompt_template_name", None)
+        self.prompt_template_path = config.get("prompt_template_path", None) or None
         self.re_search_use_chat_format = config.get("re_search_use_chat_format", True)
         self.re_search_plain_add_special_tokens = config.get("re_search_plain_add_special_tokens", False)
         self.re_search_add_qwen_chat = config.get("re_search_add_qwen_chat", False)
         self.re_search_add_thinking = config.get("re_search_add_thinking", False)
         self.re_search_qwen_im_end = config.get("re_search_qwen_im_end", QWEN_CHAT_IM_END)
         self.prompt_template: str | None = None
-        if self.prompt_template_name is not None:
+        if self.prompt_template_name is not None or self.prompt_template_path is not None:
             if self.processor is not None:
                 raise ValueError(
                     "data.prompt_template_name (ReSearch-style templates) cannot be used with a multimodal "
                     "processor; use text-only data or a custom dataset class."
                 )
-            from verl.utils.dataset.re_search_templates import prompt_template_dict
+            if self.prompt_template_path is not None:
+                from verl.utils.dataset.re_search_templates import load_prompt_template_text
 
-            if self.prompt_template_name not in prompt_template_dict:
-                raise KeyError(
-                    f"Unknown data.prompt_template_name={self.prompt_template_name!r}; "
-                    f"valid keys: {sorted(prompt_template_dict)}"
-                )
-            self.prompt_template = prompt_template_dict[self.prompt_template_name]
+                self.prompt_template = load_prompt_template_text(self.prompt_template_path)
+            else:
+                from verl.utils.dataset.re_search_templates import prompt_template_dict
+
+                if self.prompt_template_name not in prompt_template_dict:
+                    raise KeyError(
+                        f"Unknown data.prompt_template_name={self.prompt_template_name!r}; "
+                        f"valid keys: {sorted(prompt_template_dict)}"
+                    )
+                self.prompt_template = prompt_template_dict[self.prompt_template_name]
             if not self.re_search_use_chat_format and self.prompt_key != "question":
                 logger.warning(
                     "Legacy verl used prompt_key='question' when apply_chat=False; got prompt_key=%r. "
