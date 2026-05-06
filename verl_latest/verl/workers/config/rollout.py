@@ -250,6 +250,18 @@ class RolloutConfig(BaseConfig):
     search_max_turns: int = 32
     # Seconds for connect+read on POST ``{search_url}/batch_search`` (re_search_agent). Env VERL_SEARCH_HTTP_TIMEOUT overrides default.
     search_http_timeout_s: float = 300.0
+    # re_search_agent cold-start aid: when True, agent loop prefills ``<think>``
+    # (with response_mask=1) immediately after each ``</tool_response>`` so the
+    # base LM is teacher-forced to resume reasoning rather than emit prose.
+    # Read by ``ReSearchAgentLoop.__init__`` via ``OmegaConf.select(...)``.
+    post_tool_think_prefill: bool = True
+    # When True, the first ``generate`` after each ``</tool_response>`` inject passes
+    # ``ignore_eos=True`` in sampling_params so vLLM/SGLang do not stop on EOS before
+    # ``</tool_call>`` or ``max_tokens``. The re_search agent also adds ``</answer>`` as a
+    # stop for that segment, truncates after the first ``</answer>``, and appends EOS for
+    # training. Pair with ``post_tool_think_prefill`` for cold start.
+    # Broader ``ignore_eos`` for all segments is ``ignore_eos`` below (non-agent-specific).
+    post_tool_ignore_eos: bool = False
 
     # Checkpoint Engine config for update weights from trainer to rollout
     checkpoint_engine: CheckpointEngineConfig = field(default_factory=CheckpointEngineConfig)

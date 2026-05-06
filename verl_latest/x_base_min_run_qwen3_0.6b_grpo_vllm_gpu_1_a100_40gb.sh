@@ -60,7 +60,7 @@ WANDB_PROJECT="${WANDB_PROJECT:-research}"
 export WANDB_UPLOAD_CHECKPOINTS="${WANDB_UPLOAD_CHECKPOINTS:-true}"
 # Optional override for artifact name when WANDB_UPLOAD_CHECKPOINTS=true.
 export WANDB_CHECKPOINT_ARTIFACT_NAME="${WANDB_CHECKPOINT_ARTIFACT_NAME:-qwen3_0.6b}"
-PROMPT_TEMPLATE_NAME="${PROMPT_TEMPLATE_NAME:-re_search_template_sys}"
+PROMPT_TEMPLATE_NAME="${PROMPT_TEMPLATE_NAME:-re_search_template}"
 PROMPT_TEMPLATE_PATH="${PROMPT_TEMPLATE_PATH:-}"
 RE_SEARCH_REWARD_FUNCTION_PATH="${RE_SEARCH_REWARD_FUNCTION_PATH:-}"
 RE_SEARCH_REWARD_FUNCTION_NAME="${RE_SEARCH_REWARD_FUNCTION_NAME:-compute_score}"
@@ -68,6 +68,39 @@ ROLLOUT_TEMPERATURE="${ROLLOUT_TEMPERATURE:-${TEMPERATURE:-1.0}}"
 ROLLOUT_TOP_P="${ROLLOUT_TOP_P:-${TOP_P:-1.0}}"
 export ROLLOUT_TEMPERATURE
 export ROLLOUT_TOP_P
+
+# --- Cold-start temperature anneal -------------------------------------------------
+# Implementation: ``verl/utils/temperature_anneal.py`` (read once per ``generate_sequences``
+# inside ``verl/experimental/agent_loop/agent_loop.py``). All knobs are env-driven, so
+# disabled = exact same behaviour as before. Validation always uses ``val_kwargs.*``.
+#
+# Use case: base-model GRPO is structurally cold — ``r1_searcher_format`` rewards
+# almost nothing in step 0–N because the policy never emits ``<think>``/``<tool_call>``.
+# Briefly raising T at the rollout widens support so a few rollouts hit the cascade,
+# producing the gradient needed to escape the dead zone, then decays to the production
+# temperature.
+#
+# Bias note: the actor recomputes log-probs at the *static* ``rollout.temperature``
+# (see ``fsdp_workers.compute_log_prob``), so the importance ratio is biased while the
+# anneal is active. Keep the range small (≤ 1.5x) and the schedule monotonic. Disable
+# (``ROLLOUT_TEMPERATURE_ANNEAL=false``) once the model can produce structured rollouts.
+ROLLOUT_TEMPERATURE_ANNEAL="${ROLLOUT_TEMPERATURE_ANNEAL:-false}"
+ROLLOUT_TEMPERATURE_START="${ROLLOUT_TEMPERATURE_START:-${ROLLOUT_TEMPERATURE}}"
+ROLLOUT_TEMPERATURE_END="${ROLLOUT_TEMPERATURE_END:-${ROLLOUT_TEMPERATURE}}"
+ROLLOUT_TEMPERATURE_ANNEAL_STEPS="${ROLLOUT_TEMPERATURE_ANNEAL_STEPS:-100}"
+ROLLOUT_TEMPERATURE_ANNEAL_WARMUP_STEPS="${ROLLOUT_TEMPERATURE_ANNEAL_WARMUP_STEPS:-0}"
+ROLLOUT_TEMPERATURE_ANNEAL_SCHEDULE="${ROLLOUT_TEMPERATURE_ANNEAL_SCHEDULE:-linear}"
+export ROLLOUT_TEMPERATURE_ANNEAL
+export ROLLOUT_TEMPERATURE_START
+export ROLLOUT_TEMPERATURE_END
+export ROLLOUT_TEMPERATURE_ANNEAL_STEPS
+export ROLLOUT_TEMPERATURE_ANNEAL_WARMUP_STEPS
+export ROLLOUT_TEMPERATURE_ANNEAL_SCHEDULE
+# Suggested cold-start preset (uncomment to enable):
+#   ROLLOUT_TEMPERATURE=1.0 ROLLOUT_TEMPERATURE_ANNEAL=true \
+#   ROLLOUT_TEMPERATURE_START=1.2 ROLLOUT_TEMPERATURE_END=1.0 \
+#   ROLLOUT_TEMPERATURE_ANNEAL_STEPS=80 ROLLOUT_TEMPERATURE_ANNEAL_SCHEDULE=cosine \
+#   bash x_base_min_run_qwen3_0.6b_grpo_vllm_gpu_1_a100_40gb.sh
 
 # Repo checkout root (models/, data/musique/ — same layout as scripts/train/train.sh)
 if REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
@@ -97,7 +130,7 @@ run_timestamp="$(date +%Y%m%d_%H%M%S)"
 # Append timestamp to experiment/checkpoint run dir by default so each launch gets a unique save path.
 # Set ADD_TIMESTAMP_TO_EXPERIMENT_NAME=false to keep an explicit fixed run name (useful for resume_mode=auto).
 add_timestamp_to_experiment_name="${ADD_TIMESTAMP_TO_EXPERIMENT_NAME:-true}"
-trainer_experiment_base_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_instruct_grpo_gpu_1_40gb}"
+trainer_experiment_base_name="${WANDB_EXPERIMENT_NAME:-qwen3_0.6b_base_grpo_gpu_1_40gb}"
 if [ "${add_timestamp_to_experiment_name}" = "true" ]; then
   trainer_experiment_name="${trainer_experiment_base_name}_${run_timestamp}"
 else
@@ -111,7 +144,7 @@ RESUME_MODE="${RESUME_MODE:-disable}"
 
 RAY_DATA_HOME=${RAY_DATA_HOME:-"${HOME}/verl"}
 # Match train_instruct.sh intent; override if your checkpoint lives under models/Qwen3-0.6B only.
-MODEL_PATH=${MODEL_PATH:-"${REPO_ROOT}/models/Qwen3-0.6B"}
+MODEL_PATH=${MODEL_PATH:-"${REPO_ROOT}/models/Qwen3-0.6B-Base"}
 CKPTS_DIR=${CKPTS_DIR:-"${RAY_DATA_HOME}/ckpts/${trainer_project_name}/${trainer_experiment_name}_${run_timestamp}"}
 TRAIN_FILE=${TRAIN_FILE:-"${REPO_ROOT}/data/musique/train.parquet"}
 TEST_FILE=${TEST_FILE:-"${REPO_ROOT}/data/musique/test.parquet"}
@@ -147,6 +180,12 @@ keys = [
     "RE_SEARCH_REWARD_FUNCTION_NAME",
     "ROLLOUT_TEMPERATURE",
     "ROLLOUT_TOP_P",
+    "ROLLOUT_TEMPERATURE_ANNEAL",
+    "ROLLOUT_TEMPERATURE_START",
+    "ROLLOUT_TEMPERATURE_END",
+    "ROLLOUT_TEMPERATURE_ANNEAL_STEPS",
+    "ROLLOUT_TEMPERATURE_ANNEAL_WARMUP_STEPS",
+    "ROLLOUT_TEMPERATURE_ANNEAL_SCHEDULE",
     "RAY_DATA_HOME",
     "CKPTS_DIR",
     "ROLLOUT_SAVE_PATH",
@@ -184,7 +223,7 @@ dataloader_num_workers="${DATALOADER_NUM_WORKERS:-8}"
 
 # FIXED HYPERPARAMETERS
 vllm_max_model_len="${VLLM_MAX_MODEL_LEN:-4608}"
-max_prompt_length="${MAX_PROMPT_LENGTH:-1024}"
+max_prompt_length="${MAX_PROMPT_LENGTH:-512}"
 max_response_length="${MAX_RESPONSE_LENGTH:-4096}"
 rollout_n="${ROLLOUT_N:-5}"
 
@@ -230,7 +269,7 @@ python3 -m verl.trainer.main_ppo \
     data.prompt_key=question \
     +data.prompt_template_name=${PROMPT_TEMPLATE_NAME} \
     +data.prompt_template_path="${PROMPT_TEMPLATE_PATH}" \
-    +data.re_search_use_chat_format=True \
+    +data.re_search_use_chat_format=False \
     +data.re_search_add_qwen_chat=${RE_SEARCH_ADD_QWEN_CHAT} \
     +data.re_search_add_thinking=${RE_SEARCH_ADD_THINKING} \
     data.train_batch_size=${train_batch_size} \
@@ -238,7 +277,6 @@ python3 -m verl.trainer.main_ppo \
     data.dataloader_num_workers=${dataloader_num_workers} \
     data.max_prompt_length=${max_prompt_length} \
     data.max_response_length=${max_response_length} \
-    data.filter_overlong_prompts=True \
     data.truncation='error' \
     actor_rollout_ref.model.path=${MODEL_PATH} \
     +actor_rollout_ref.model.override_config.attn_implementation=sdpa \
@@ -254,6 +292,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.enable_gradient_checkpointing=${gradient_checkpointing} \
     actor_rollout_ref.actor.fsdp_config.param_offload=True \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=False \
+    +actor_rollout_ref.rollout.post_tool_think_prefill=True \
     actor_rollout_ref.rollout.enforce_eager=True \
     actor_rollout_ref.rollout.log_prob_use_dynamic_bsz=${use_dynamic_bsz} \
     actor_rollout_ref.rollout.agent.num_workers=${rollout_agent_num_workers} \
@@ -277,7 +316,6 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=${max_ref_logprob_token_len_per_gpu} \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     actor_rollout_ref.ref.use_torch_compile=False \
-    +actor_rollout_ref.rollout.post_tool_ignore_eos=true \
     reward.reward_manager.name=re_search \
     +reward.re_search_function.path="${RE_SEARCH_REWARD_FUNCTION_PATH}" \
     +reward.re_search_function.name="${RE_SEARCH_REWARD_FUNCTION_NAME}" \

@@ -89,9 +89,15 @@ class RLHFDataset(Dataset):
 
         - ``prompt_template_name``: key in ``verl.utils.dataset.re_search_templates.prompt_template_dict``
           (e.g. ``re_search_template_sys`` for system+user chat, or ``re_search_template`` with ``{prompt}``).
+          Substitution is ``template.format(prompt=...)`` so any literal ``{`` / ``}`` in the
+          Python source string must be doubled (``{{`` / ``}}``).
+        - ``prompt_template_path``: path to a raw ``.txt`` file containing the template body.
+          Substitution is ``template.replace("{prompt}", ...)`` so the file can contain
+          literal single braces (e.g. ``<tool_call>{"name":"search",...}</tool_call>``)
+          without Python-format doubling.
         - ``re_search_use_chat_format`` (default ``True``): if ``True``, system message = template string and
-          user message = ``prompt_key`` column; if ``False``, one user message with
-          ``template.format(prompt=...)`` (legacy ``apply_chat=False``; use ``prompt_key=question``).
+          user message = ``prompt_key`` column; if ``False``, one user message with the question
+          substituted into the template (legacy ``apply_chat=False``; use ``prompt_key=question``).
     """
 
     def __init__(
@@ -159,6 +165,13 @@ class RLHFDataset(Dataset):
         self.re_search_add_thinking = config.get("re_search_add_thinking", False)
         self.re_search_qwen_im_end = config.get("re_search_qwen_im_end", QWEN_CHAT_IM_END)
         self.prompt_template: str | None = None
+        # When True the template was loaded raw from a ``.txt`` file and the question is
+        # spliced in with ``str.replace("{prompt}", question)`` (no Python format escaping
+        # needed in the file). When False the template comes from the Python
+        # ``prompt_template_dict`` (e.g. ``re_search_template``), which uses
+        # ``str.format(prompt=...)`` and therefore requires literal ``{`` / ``}`` to be
+        # doubled as ``{{`` / ``}}`` in the source string.
+        self.prompt_template_is_raw_text: bool = False
         if self.prompt_template_name is not None or self.prompt_template_path is not None:
             if self.processor is not None:
                 raise ValueError(
@@ -169,6 +182,7 @@ class RLHFDataset(Dataset):
                 from verl.utils.dataset.re_search_templates import load_prompt_template_text
 
                 self.prompt_template = load_prompt_template_text(self.prompt_template_path)
+                self.prompt_template_is_raw_text = True
             else:
                 from verl.utils.dataset.re_search_templates import prompt_template_dict
 
@@ -179,10 +193,14 @@ class RLHFDataset(Dataset):
                     )
                 self.prompt_template = prompt_template_dict[self.prompt_template_name]
             if not self.re_search_use_chat_format and self.prompt_key != "question":
+                substitution = (
+                    ".replace('{prompt}', ...)" if self.prompt_template_is_raw_text else ".format(prompt=...)"
+                )
                 logger.warning(
                     "Legacy verl used prompt_key='question' when apply_chat=False; got prompt_key=%r. "
-                    "Ensure the column holds the raw question string for .format(prompt=...).",
+                    "Ensure the column holds the raw question string for %s.",
                     self.prompt_key,
+                    substitution,
                 )
 
         self._download()
@@ -376,8 +394,15 @@ class RLHFDataset(Dataset):
         When ``re_search_use_chat_format`` is True (default), matches legacy ``apply_chat=True``:
         system message = template, user message = raw question from ``prompt_key``.
 
-        When False, matches legacy ``apply_chat=False``: one user message with
-        ``template.format(prompt=question)`` (e.g. ``re_search_template`` with ``{prompt}``).
+        When False, matches legacy ``apply_chat=False``: one user message with the question
+        substituted into the template. Substitution mode depends on how the template was loaded:
+
+        * ``data.prompt_template_path`` (raw ``.txt`` file): ``template.replace("{prompt}", question)``
+          so the file can use literal ``{`` / ``}`` (e.g. in ``<tool_call>`` JSON) without
+          Python-format doubling.
+        * ``data.prompt_template_name`` (Python dict in ``re_search_templates``): ``template.format(prompt=question)``,
+          which requires literal braces to appear as ``{{`` / ``}}`` in the Python source.
+
         Rollout tokenization uses ``tokenizer.encode(content)`` (no chat template); see
         ``AgentLoopBase.tokenize_prompt_for_rollout``.
         """
@@ -394,7 +419,10 @@ class RLHFDataset(Dataset):
                 {"role": "system", "content": self.prompt_template},
                 {"role": "user", "content": question},
             ]
-        full_prompt = self.prompt_template.format(prompt=question)
+        if self.prompt_template_is_raw_text:
+            full_prompt = self.prompt_template.replace("{prompt}", question)
+        else:
+            full_prompt = self.prompt_template.format(prompt=question)
         return [{"role": "user", "content": full_prompt}]
 
     def _build_messages(self, example: dict):

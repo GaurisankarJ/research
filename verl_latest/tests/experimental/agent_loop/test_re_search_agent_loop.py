@@ -7,7 +7,9 @@
 import pytest
 
 from verl.experimental.agent_loop.re_search_agent_loop import (
+    _append_eos_token_id,
     _digest_response_text,
+    _truncate_at_first_close_answer,
     classify_last_segment_no_valid_search,
     extract_search_content,
     extract_search_tool_call,
@@ -100,6 +102,19 @@ def test_extract_search_tool_call_rejects_invalid_payloads(text, expected_status
 )
 def test_classify_last_segment_no_valid_search_reports_tool_call_shape(text, expected_status):
     assert classify_last_segment_no_valid_search(text) == expected_status
+
+
+def test_truncate_at_first_close_answer():
+    assert _truncate_at_first_close_answer("x</answer>y") == "x</answer>"
+    assert _truncate_at_first_close_answer("no close") is None
+
+
+def test_append_eos_token_id_idempotent():
+    class Tok:
+        eos_token_id = 99
+
+    assert _append_eos_token_id(Tok(), [1, 2, 3]) == [1, 2, 3, 99]
+    assert _append_eos_token_id(Tok(), [1, 2, 99]) == [1, 2, 99]
 
 
 def test_digest_response_text_tracks_qwen_tool_tags():

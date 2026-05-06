@@ -8,6 +8,12 @@
 
 Text-only (no multimodal processor). Configure ``actor_rollout_ref.rollout.search_url`` and set
 ``actor_rollout_ref.rollout.agent.default_agent_loop=re_search_agent``.
+
+Optional: ``actor_rollout_ref.rollout.post_tool_ignore_eos=true`` sets ``ignore_eos`` on the first
+``generate`` after each tool result so EOS does not end that segment early (vLLM/SGLang).
+In that case we also add ``</answer>`` as a stop string; after the segment we truncate at the first
+``</answer>`` if needed and append ``tokenizer.eos_token_id`` so rewards / log-prob training see a
+normal chat termination.
 """
 
 from __future__ import annotations
@@ -265,6 +271,25 @@ def _merge_digest(
     return out
 
 
+def _truncate_at_first_close_answer(text: str) -> str | None:
+    """If ``</answer>`` appears, return text up to and including the first closing tag; else None."""
+    close = "</answer>"
+    pos = text.find(close)
+    if pos == -1:
+        return None
+    return text[: pos + len(close)]
+
+
+def _append_eos_token_id(tokenizer: Any, token_ids: list[int]) -> list[int]:
+    """Append a single EOS id if the last id is not already EOS (best-effort for chat LMs)."""
+    eos_id = getattr(tokenizer, "eos_token_id", None)
+    if eos_id is None:
+        return token_ids
+    if token_ids and token_ids[-1] == eos_id:
+        return token_ids
+    return token_ids + [eos_id]
+
+
 def _format_termination_reason(code: str, digest: dict[str, Any]) -> str:
     """Single log line: code + compact facts (full detail lives in ``re_search_response_digest``)."""
     parts = [
@@ -306,6 +331,28 @@ class ReSearchAgentLoop(AgentLoopBase):
             self.search_http_timeout_s = float(cfg_timeout)
         else:
             self.search_http_timeout_s = float(os.getenv("VERL_SEARCH_HTTP_TIMEOUT", "300"))
+        # TODO(cold-start): post-``</tool_response>`` ``<think>`` prefill.
+        # Set ``actor_rollout_ref.rollout.post_tool_think_prefill=False`` to disable
+        # (or comment out the ``if self.post_tool_think_prefill`` block below).
+        # Rationale: base models rarely emit ``<think>`` spontaneously after a
+        # ``</tool_response>``; teacher-forcing the token with ``response_mask=1``
+        # (see block below) trains the LM to predict ``<think>`` at that position,
+        # unlike the retriever content which is masked (``response_mask=0``).
+        self.post_tool_think_prefill = bool(
+            OmegaConf.select(
+                self.config,
+                "actor_rollout_ref.rollout.post_tool_think_prefill",
+                default=True,
+            )
+        )
+        self.post_tool_ignore_eos = bool(
+            OmegaConf.select(
+                self.config,
+                "actor_rollout_ref.rollout.post_tool_ignore_eos",
+                default=False,
+            )
+        )
+        self._post_tool_think_prefill_ids: list[int] | None = None
 
     async def run(self, sampling_params: dict[str, Any], **kwargs) -> AgentLoopOutput:
         if self.processor is not None:
@@ -353,17 +400,26 @@ class ReSearchAgentLoop(AgentLoopBase):
         total_retries = 0
 
         with simple_timer("generate_sequences", timing):
+            next_seg_ignore_eos = False
             while len(response_tokens) < self.response_length and search_segments < self.search_max_turns:
                 remaining = self.response_length - len(response_tokens)
                 if remaining <= 0:
                     termination_code = "response_budget_exhausted_before_generate"
                     break
 
+                apply_ignore_eos = next_seg_ignore_eos
                 seg_params = {
                     **base_sp,
                     "max_tokens": remaining,
                     "stop": ["</tool_call>"],
                 }
+                if apply_ignore_eos:
+                    seg_params["ignore_eos"] = True
+                    next_seg_ignore_eos = False
+                    # With ignore_eos, the LM may otherwise run until max_tokens and emit junk after
+                    # ``</answer>``. Stop at the first closing answer tag and finalize with EOS below.
+                    if self.post_tool_ignore_eos:
+                        seg_params["stop"] = ["</tool_call>", "</answer>"]
 
                 output: TokenOutput = await self.server_manager.generate(
                     request_id=request_id,
@@ -380,11 +436,24 @@ class ReSearchAgentLoop(AgentLoopBase):
                     termination_code = "empty_model_output"
                     break
 
+                seg_text = self.tokenizer.decode(new_ids, skip_special_tokens=False)
+                # Post-tool segment with ignore_eos: cap at first ``</answer>`` and append EOS for training.
+                if apply_ignore_eos and self.post_tool_ignore_eos:
+                    truncated = _truncate_at_first_close_answer(seg_text)
+                    if truncated is not None:
+                        seg_text = truncated
+                        new_ids = self.tokenizer.encode(seg_text, add_special_tokens=False)
+                        new_ids = _append_eos_token_id(self.tokenizer, new_ids)
+
+                budget_left = self.response_length - len(response_tokens)
+                if len(new_ids) > budget_left:
+                    new_ids = new_ids[:budget_left]
+                    seg_text = self.tokenizer.decode(new_ids, skip_special_tokens=False)
+
                 last_lm_end_token_id = new_ids[-1]
                 last_lm_stop_reason = output.stop_reason
                 last_lm_segment_token_ids = list(new_ids)
 
-                seg_text = self.tokenizer.decode(new_ids, skip_special_tokens=False)
                 last_lm_segment_text = seg_text
                 search_query, search_status = extract_search_tool_call(seg_text)
                 need_search = search_status == "valid_search_tool_call"
@@ -451,6 +520,35 @@ class ReSearchAgentLoop(AgentLoopBase):
                 response_logprobs.extend([0.0] * len(result_ids))
                 full_context = full_context + result_ids
                 search_segments += 1
+
+                # TODO(cold-start): remove this block (or set
+                # actor_rollout_ref.rollout.post_tool_think_prefill=False) to
+                # stop teacher-forcing ``<think>`` after each ``</tool_response>``.
+                # Unmasked (``response_mask=1``) so the LM is trained to predict
+                # ``<think>`` at this position, unlike the retriever content above
+                # which is masked (``response_mask=0``).
+                will_continue = (
+                    len(response_tokens) < self.response_length
+                    and search_segments < self.search_max_turns
+                )
+                if self.post_tool_think_prefill and will_continue:
+                    if self._post_tool_think_prefill_ids is None:
+                        # Space before/after the tag matches typical chat spacing and separates
+                        # the injected ``</tool_response>`` tail from the think opener / body.
+                        self._post_tool_think_prefill_ids = self.tokenizer.encode(
+                            " <think> ", add_special_tokens=False
+                        )
+                    think_ids = self._post_tool_think_prefill_ids
+                    remaining = self.response_length - len(response_tokens)
+                    if remaining > 0 and think_ids:
+                        think_ids = think_ids[:remaining]
+                        response_tokens.extend(think_ids)
+                        response_mask.extend([1] * len(think_ids))
+                        response_logprobs.extend([0.0] * len(think_ids))
+                        full_context = full_context + think_ids
+
+                if will_continue and self.post_tool_ignore_eos:
+                    next_seg_ignore_eos = True
 
         if termination_code == "in_progress":
             if len(response_tokens) >= self.response_length:

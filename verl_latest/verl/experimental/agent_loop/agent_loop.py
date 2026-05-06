@@ -615,6 +615,18 @@ class AgentLoopWorker:
             sampling_params["top_p"] = config.val_kwargs.top_p
             sampling_params["top_k"] = config.val_kwargs.top_k
             sampling_params["temperature"] = config.val_kwargs.temperature
+        else:
+            # Cold-start temperature anneal (training only). No-op unless
+            # ``ROLLOUT_TEMPERATURE_ANNEAL=true`` is set in env. See
+            # ``verl/utils/temperature_anneal.py`` for the documented
+            # importance-ratio bias trade-off vs the actor's static
+            # ``meta_info["temperature"]``.
+            from verl.utils.temperature_anneal import annealed_temperature
+
+            sampling_params["temperature"] = annealed_temperature(
+                int(batch.meta_info.get("global_steps", -1)),
+                float(sampling_params["temperature"]),
+            )
 
         # by default, we assume it's a single turn agent
         if "agent_name" not in batch.non_tensor_batch:

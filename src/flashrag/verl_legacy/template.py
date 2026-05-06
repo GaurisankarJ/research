@@ -1,14 +1,54 @@
-re_search_template = """A conversation between User and Assistant. \
-The user asks a question, and the assistant solves it. \
-The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. \
-During thinking, the assistant can invoke the wikipedia search tool to search for factual information when needed. \
-The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags respectively, \
-and tool calls and tool responses are enclosed within <tool_call> </tool_call> and <tool_response> </tool_response> tags respectively. \
-Every <tool_call> must contain valid JSON with this schema: {"name": "search", "arguments": {"query": "short factual query"}}. \
-For example, <think>Need the key fact.</think> <tool_call>{"name": "search", "arguments": {"query": "entity founding year"}}</tool_call> <tool_response>search result here</tool_response> \
-<think>I now have the needed fact.</think> <answer>The final answer is \\[ \\boxed{{answer here}} \\]</answer>. \
-In the last part of the answer, the final exact answer is enclosed within \\boxed{{}} with latex format. \
-User: {prompt}. Assistant:"""
+re_search_template = """Who founded Microsoft?
+<think>Need the founders.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"Microsoft founders"}}}}</tool_call>
+<tool_response>Microsoft was founded by Bill Gates and Paul Allen.</tool_response>
+<think>I have the founders.</think>
+<answer>The final answer is \\[ \\boxed{{Bill Gates and Paul Allen}} \\]</answer>
+
+What year was Google founded?
+<think>Need the founding year.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"Google founded year"}}}}</tool_call>
+<tool_response>Google was founded in 1998.</tool_response>
+<think>I have the year.</think>
+<answer>The final answer is \\[ \\boxed{{1998}} \\]</answer>
+
+What is the capital of France?
+<think>Need the capital.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"France capital city"}}}}</tool_call>
+<tool_response>The capital city of France is Paris.</tool_response>
+<think>I have the capital.</think>
+<answer>The final answer is \\[ \\boxed{{Paris}} \\]</answer>
+
+What year did Apollo 11 land on the Moon?
+<think>Need the year.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"Apollo 11 Moon landing year"}}}}</tool_call>
+<tool_response>Apollo 11 landed on the Moon in 1969.</tool_response>
+<think>I have the year.</think>
+<answer>The final answer is \\[ \\boxed{{1969}} \\]</answer>
+
+Who wrote Hamlet?
+<think>Need the author.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"Hamlet author"}}}}</tool_call>
+<tool_response>Hamlet was written by William Shakespeare.</tool_response>
+<think>I have the author.</think>
+<answer>The final answer is \\[ \\boxed{{William Shakespeare}} \\]</answer>
+
+What is the capital of Italy?
+<think>Need the capital.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"Italy capital city"}}}}</tool_call>
+<tool_response>The capital city of Italy is Rome.</tool_response>
+<think>I have the capital.</think>
+<answer>The final answer is \\[ \\boxed{{Rome}} \\]</answer>
+
+What is the largest planet in the Solar System?
+<think>Need the planet.</think>
+<tool_call>{{"name":"search","arguments":{{"query":"largest planet in the Solar System"}}}}</tool_call>
+<tool_response>The largest planet in the Solar System is Jupiter.</tool_response>
+<think>I have the planet.</think>
+<answer>The final answer is \\[ \\boxed{{Jupiter}} \\]</answer>
+
+{prompt}
+"""
 
 re_search_template_sys = """You are a reasoning agent with one tool named search.
 

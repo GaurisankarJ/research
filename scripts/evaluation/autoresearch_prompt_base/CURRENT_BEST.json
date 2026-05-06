@@ -1,0 +1,16 @@
+{
+  "candidate": "candidate_21",
+  "status": "keep",
+  "exact_score": "0/125 = 0.000",
+  "partial_avg": 0.23,
+  "inline_avg": 0.096,
+  "hybrid_avg": 0.16485,
+  "dominant_failure": "text_outside_tags",
+  "run_dir": "/zfsstore/user/s4374886/omega/re-search/results/bamboogle_base/bamboogle_2026_04_18_21_00_research_qwen3_base",
+  "description": "extend the best pure-trace prompt from five to seven ordinary factual exemplars without adding any new formatting cues",
+  "prompt_key": "re_search_template",
+  "prompt": "Who founded Microsoft?\n<think>Need the founders.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"Microsoft founders\"}}}}</tool_call>\n<tool_response>Microsoft was founded by Bill Gates and Paul Allen.</tool_response>\n<think>I have the founders.</think>\n<answer>The final answer is \\[ \\boxed{{Bill Gates and Paul Allen}} \\]</answer>\n\nWhat year was Google founded?\n<think>Need the founding year.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"Google founded year\"}}}}</tool_call>\n<tool_response>Google was founded in 1998.</tool_response>\n<think>I have the year.</think>\n<answer>The final answer is \\[ \\boxed{{1998}} \\]</answer>\n\nWhat is the capital of France?\n<think>Need the capital.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"France capital city\"}}}}</tool_call>\n<tool_response>The capital city of France is Paris.</tool_response>\n<think>I have the capital.</think>\n<answer>The final answer is \\[ \\boxed{{Paris}} \\]</answer>\n\nWhat year did Apollo 11 land on the Moon?\n<think>Need the year.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"Apollo 11 Moon landing year\"}}}}</tool_call>\n<tool_response>Apollo 11 landed on the Moon in 1969.</tool_response>\n<think>I have the year.</think>\n<answer>The final answer is \\[ \\boxed{{1969}} \\]</answer>\n\nWho wrote Hamlet?\n<think>Need the author.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"Hamlet author\"}}}}</tool_call>\n<tool_response>Hamlet was written by William Shakespeare.</tool_response>\n<think>I have the author.</think>\n<answer>The final answer is \\[ \\boxed{{William Shakespeare}} \\]</answer>\n\nWhat is the capital of Italy?\n<think>Need the capital.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"Italy capital city\"}}}}</tool_call>\n<tool_response>The capital city of Italy is Rome.</tool_response>\n<think>I have the capital.</think>\n<answer>The final answer is \\[ \\boxed{{Rome}} \\]</answer>\n\nWhat is the largest planet in the Solar System?\n<think>Need the planet.</think>\n<tool_call>{{\"name\":\"search\",\"arguments\":{{\"query\":\"largest planet in the Solar System\"}}}}</tool_call>\n<tool_response>The largest planet in the Solar System is Jupiter.</tool_response>\n<think>I have the planet.</think>\n<answer>The final answer is \\[ \\boxed{{Jupiter}} \\]</answer>\n\n{prompt}\n",
+  "prompt_sha256": "4a49e7f47d06e2a4edb650b7f9f2ec2045180fbbd7ea8d96f0a329963b7c1958",
+  "prompt_char_len": 2232,
+  "updated_at": "2026-04-18T21:01:00+02:00"
+}

@@ -1,0 +1,40 @@
+{
+  "created_at": "2026-04-14T23:05:47",
+  "config_path": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/config.yaml",
+  "experiment_name": "ablation_zero",
+  "variant": "z",
+  "run_name": "20260414_230547_ablation_zero",
+  "run_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero",
+  "inputs": {
+    "config": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/inputs/config.yaml",
+    "prompt": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/inputs/prompt.txt",
+    "reward": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/inputs/reward.py"
+  },
+  "outputs": {
+    "logs_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs",
+    "trainer_log": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs/trainer.log",
+    "retriever_log": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs/retriever.log",
+    "slurm_stdout": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs/slurm-%x-%j.out",
+    "slurm_stderr": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs/slurm-%x-%j.err",
+    "checkpoints_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/checkpoints",
+    "rollouts_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/rollouts",
+    "runtime_state_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/runtime_state",
+    "tmp_dir": "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/tmp"
+  },
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 1.0
+  },
+  "submit_command": [
+    "sbatch",
+    "--job-name",
+    "20260414_230547_ablation_zero",
+    "--chdir",
+    "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero",
+    "--output",
+    "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs/slurm-%x-%j.out",
+    "--error",
+    "/zfsstore/user/s4374886/omega/re-search/experiments/ablation_zero/runs/20260414_230547_ablation_zero/logs/slurm-%x-%j.err",
+    "/zfsstore/user/s4374886/omega/re-search/sbatch/retriever_then_z_run_qwen3_0.6b_grpo_vllm_instruct_gpu_1_a100_80gb.sbatch"
+  ]
+}

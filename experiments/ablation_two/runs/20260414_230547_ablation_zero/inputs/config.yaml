@@ -1,0 +1,16 @@
+run:
+  experiment_name: ablation_zero
+  variant: z
+  output_root: runs
+
+prompt:
+  path: prompt.txt
+  template_name: re_search_template_sys
+
+reward:
+  path: reward.py
+  function_name: compute_score
+
+sampling:
+  temperature: 1.0
+  top_p: 1.0
